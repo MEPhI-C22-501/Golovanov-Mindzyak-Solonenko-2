@@ -3,19 +3,19 @@ use IEEE.STD_LOGIC_1164.ALL;
 use IEEE.STD_LOGIC_ARITH.ALL;
 use IEEE.STD_LOGIC_UNSIGNED.ALL;
 
-entity load_store_unit is
-	Port ( 
-        i_clk, i_error, i_regWrite, o_r_type, o_i_type, o_s_type, o_u_type : in STD_LOGIC;
+entity LSU is
+	Port (
+        i_clk, i_error, i_regWrite, i_r_type, i_i_type, i_s_type, i_u_type : in STD_LOGIC;
         i_opcode_decoder : in std_logic_vector (16 downto 0);
         i_rs1_decoder, i_rs2_decoder, i_rd_decoder, i_imm_decoder : in std_logic_vector (31 downto 0);
         i_rs1_csr, i_rs2_csr, i_rd_csr : in std_logic_vector (31 downto 0);
 
         o_opcode_csr, o_opcode_alu : out std_logic_vector (16 downto 0); 
-        o_rs1_csr, o_rs2_csr, o_rd_csr, o_imm_csr : out std_logic_vector (31 downto 0);
+        o_rs1_csr, o_rs2_csr, o_rd_csr : out std_logic_vector (31 downto 0);
         o_rs1_alu, o_rs2_alu, o_rd_alu, o_imm_alu : out std_logic_vector (31 downto 0));
 end entity;
 
-architecture load_store_unit_arch of load_store_unit is
+architecture LSU_arch of LSU is
 
 signal cnt_clk : std_logic_vector (2 downto 0) := "000";
 signal cnt_expected_clk : std_logic_vector (2 downto 0) := "000";
