@@ -8,7 +8,7 @@ entity LSU is
         
         --i_r_type, i_i_type, i_s_type, i_u_type, i_error под вопросом, по идее можно выбросить        
         
-        i_clk, i_regWrite_decoder, i_regWrite_ans : in std_logic;
+        i_clk, i_rst, i_regWrite_decoder, i_regWrite_ans : in std_logic;
         i_opcode_decoder : in std_logic_vector (16 downto 0);
         i_rs1_decoder, i_rs2_decoder, i_rd_decoder : in std_logic_vector (5 downto 0);
         i_imm_decoder, i_rd_ans : in std_logic_vector (31 downto 0);
@@ -27,7 +27,13 @@ begin
         process(i_clk) is
 	begin
 
-                if (rising_edge(i_clk)) then
+                if (i_rst = '1') then
+
+                        o_opcode_alu <= std_logic_vector(to_unsigned(0, 17));
+                        o_regWrite_alu <= '0';
+                        o_imm_alu <= std_logic_vector(to_unsigned(0, 32));
+
+                elsif (rising_edge(i_clk)) then
                         
                         o_opcode_alu <= i_opcode_decoder;
                         o_regWrite_alu <= i_regWrite_decoder;
@@ -38,12 +44,17 @@ begin
         end process;
 
         -- Генерация процесса для всех 32 регистров
+
         gen_registers : for i in 0 to 31 generate
-                
-                process(i_clk)
+
+                process(i_clk, i_rst)
                 begin
                 
-                        if rising_edge(i_clk) then
+                        if (i_rst = '1') then
+
+                                o_rs_csr(i) <= std_logic_vector(to_unsigned(0, 32));
+
+                        elsif rising_edge(i_clk) then
                                 
                                 if (i_regWrite_ans = '1' and i_rd_decoder = std_logic_vector(to_unsigned(i, 6))) then
                                         
@@ -51,15 +62,15 @@ begin
                                 
                                 end if;
 
-                                if (i_opcode_decoder = "00000000000100011") then -- Store SB
+                                if (i_opcode_decoder = "00000000000100011" and i_rd_decoder = std_logic_vector(to_unsigned(i, 6))) then -- Store SB
                                 
                                         o_rs_csr(i) <= i_imm_decoder;
                                 
-                                elsif (i_opcode_decoder = "00000000010100011") then -- Store SH
+                                elsif (i_opcode_decoder = "00000000010100011" and i_rd_decoder = std_logic_vector(to_unsigned(i, 6))) then -- Store SH
                                 
                                         o_rs_csr(i) <= i_imm_decoder;
                                 
-                                elsif (i_opcode_decoder = "00000000100100011") then -- Store SW
+                                elsif (i_opcode_decoder = "00000000100100011" and i_rd_decoder = std_logic_vector(to_unsigned(i, 6))) then -- Store SW
                                 
                                         o_rs_csr(i) <= i_imm_decoder;
                                 
@@ -78,7 +89,7 @@ begin
                                 end if;
 
                         end if;
-                
+
                 end process;
 
         end generate gen_registers;
