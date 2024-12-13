@@ -44,54 +44,53 @@ begin
         end process;
 
         -- Генерация процесса для всех 32 регистров
-
-        gen_registers : for i in 0 to 31 generate
-
                 process(i_clk, i_rst)
                 begin
                 
                         if (i_rst = '1') then
 
-                                o_rs_csr(i) <= std_logic_vector(to_unsigned(0, 32));
+                                o_rs_csr <= (others => (others => '0'));
 
                         elsif rising_edge(i_clk) then
                                 
-                                if (i_regWrite_ans = '1' and i_rd_decoder = std_logic_vector(to_unsigned(i, 6))) then
+                                for i in 0 to 31 loop
+
+                                        if (i_regWrite_ans = '1' and i_rd_decoder = std_logic_vector(to_unsigned(i, 6))) then
+                                                
+                                                o_rs_csr(i) <= i_rd_ans;
                                         
-                                        o_rs_csr(i) <= i_rd_ans;
-                                
-                                end if;
+                                        end if;
 
-                                if (i_opcode_decoder = "00000000000100011" and i_rd_decoder = std_logic_vector(to_unsigned(i, 6))) then -- Store SB
-                                
-                                        o_rs_csr(i) <= i_imm_decoder;
-                                
-                                elsif (i_opcode_decoder = "00000000010100011" and i_rd_decoder = std_logic_vector(to_unsigned(i, 6))) then -- Store SH
-                                
-                                        o_rs_csr(i) <= i_imm_decoder;
-                                
-                                elsif (i_opcode_decoder = "00000000100100011" and i_rd_decoder = std_logic_vector(to_unsigned(i, 6))) then -- Store SW
-                                
-                                        o_rs_csr(i) <= i_imm_decoder;
-                                
-                                end if;
+                                        if (i_opcode_decoder = "00000000000100011" and i_rd_decoder = std_logic_vector(to_unsigned(i, 6))) then -- Store SB
+                                        
+                                                o_rs_csr(i) <= i_imm_decoder;
+                                        
+                                        elsif (i_opcode_decoder = "00000000010100011" and i_rd_decoder = std_logic_vector(to_unsigned(i, 6))) then -- Store SH
+                                        
+                                                o_rs_csr(i) <= i_imm_decoder;
+                                        
+                                        elsif (i_opcode_decoder = "00000000100100011" and i_rd_decoder = std_logic_vector(to_unsigned(i, 6))) then -- Store SW
+                                        
+                                                o_rs_csr(i) <= i_imm_decoder;
+                                        
+                                        end if;
 
-                                --Здесь должны быть команды загрузки 
+                                        --Здесь должны быть команды загрузки 
 
-                                if (i_rs1_decoder = std_logic_vector(to_unsigned(i, 6))) then
-                                
-                                        o_rs1_alu <= i_rs_csr(i);
-                                
-                                elsif (i_rs2_decoder = std_logic_vector(to_unsigned(i, 6))) then
-                                
-                                        o_rs2_alu <= i_rs_csr(i);
-                                
-                                end if;
+                                        if (i_rs1_decoder = std_logic_vector(to_unsigned(i, 6))) then
+                                        
+                                                o_rs1_alu <= i_rs_csr(i);
+                                        
+                                        elsif (i_rs2_decoder = std_logic_vector(to_unsigned(i, 6))) then
+                                        
+                                                o_rs2_alu <= i_rs_csr(i);
+                                        
+                                        end if;
+
+                                end loop;
 
                         end if;
 
                 end process;
-
-        end generate gen_registers;
 
 end architecture;
