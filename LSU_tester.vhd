@@ -5,13 +5,12 @@ use work.my_vector_pkg.all;
 
 entity LSU_tester is 
     Port ( 
-        o_clk, o_rst, o_regWrite_decoder, o_regWrite_ans : out std_logic;
+        o_clk, o_rst, o_regWrite_decoder : out std_logic;
         o_opcode_decoder : out std_logic_vector (16 downto 0);
-        o_rs1_decoder, o_rs2_decoder, o_rd_decoder : out std_logic_vector (5 downto 0);
+        o_rs1_decoder, o_rs2_decoder, o_rd_decoder : out std_logic_vector (4 downto 0);
         o_imm_decoder, o_rd_ans : out std_logic_vector (31 downto 0);
         o_rs_csr : out my_vector;
 
-        i_regWrite_alu  : in std_logic;
         i_opcode_alu : in std_logic_vector (16 downto 0);
         i_rs_csr : in my_vector;
         i_rs1_alu, i_rs2_alu, i_rd_alu, i_imm_alu : in std_logic_vector (31 downto 0));
@@ -61,49 +60,50 @@ architecture LSU_tester_arch of LSU_tester is
         o_opcode_decoder <= "00000001010000011";
 
         --Store SB 00000000000100011
-        o_opcode_decoder <= "00000000000100011";
-        o_rd_decoder <= std_logic_vector(to_unsigned(0, 6));
-        o_imm_decoder <= std_logic_vector(to_unsigned(1, 32));
-        wait for 0.3 sec;
+        --o_opcode_decoder <= "00000000000100011";
+        --o_rd_decoder <= std_logic_vector(to_unsigned(0, 5));
+        --o_imm_decoder <= std_logic_vector(to_unsigned(1, 32));
+        --wait for 0.3 sec;
 
         --Store SH 00000000010100011
-        o_opcode_decoder <= "00000000010100011";
-        o_rd_decoder <= std_logic_vector(to_unsigned(1, 6));
-        o_imm_decoder <= std_logic_vector(to_unsigned(2, 32));
-        wait for 0.3 sec;
+        --o_opcode_decoder <= "00000000010100011";
+        --o_rd_decoder <= std_logic_vector(to_unsigned(1, 5));
+        --o_imm_decoder <= std_logic_vector(to_unsigned(2, 32));
+        --wait for 0.3 sec;
 
         --Store SW 00000000100100011
-        o_opcode_decoder <= "00000000100100011";
-        o_rd_decoder <= std_logic_vector(to_unsigned(2, 6));
-        o_imm_decoder <= std_logic_vector(to_unsigned(3, 32));
-        wait for 0.3 sec;
+        --o_opcode_decoder <= "00000000100100011";
+        --o_rd_decoder <= std_logic_vector(to_unsigned(2, 5));
+        --o_imm_decoder <= std_logic_vector(to_unsigned(3, 32));
+        --wait for 0.3 sec;
 
-        --Shift SLLI 00000000010010011
-        o_opcode_decoder <= "00000000010010011";
-
-        --Shift SRLI 00000001010010010
-        o_opcode_decoder <= "00000001010010010";
-
-        --Shift SRAI 01000001010010011
-        o_opcode_decoder <= "01000001010010011";
-
-        --Shift SLL 00000000010110011
-        o_opcode_decoder <= "00000000010110011";
-
-        --Shift SRL 00000001010110011
-        o_opcode_decoder <= "00000001010110011";
-
-        --Shift SRA 01000001010110011
-        o_opcode_decoder <= "01000001010110011";
 
         --Arithmetic ADDI 00000000000010011
         o_opcode_decoder <= "00000000000010011";
+        o_regWrite_decoder <= '1';
+        o_rs1_decoder <= std_logic_vector(to_unsigned(1, 5)); 
+        o_rd_decoder <= std_logic_vector(to_unsigned(2, 5));
+        o_imm_decoder <= std_logic_vector(to_unsigned(5, 32));
+        o_rd_ans <= std_logic_vector(to_unsigned(5, 32));
+        wait for 0.3 sec;
 
         --Arithmetic ADD 00000000000110011
         o_opcode_decoder <= "00000000000110011";
+        o_regWrite_decoder <= '1';
+        o_rs1_decoder <= std_logic_vector(to_unsigned(1, 5));
+        o_rs2_decoder <= std_logic_vector(to_unsigned(2, 5)); 
+        o_rd_decoder <= std_logic_vector(to_unsigned(3, 5));
+        o_rd_ans <= std_logic_vector(to_unsigned(5, 32));
+        wait for 0.3 sec;
 
         --Arithmetic SUB 01000000000110011
         o_opcode_decoder <= "01000000000110011";
+        o_regWrite_decoder <= '1';
+        o_rs1_decoder <= std_logic_vector(to_unsigned(3, 5));
+        o_rs2_decoder <= std_logic_vector(to_unsigned(4, 5)); 
+        o_rd_decoder <= std_logic_vector(to_unsigned(5, 5));
+        o_rd_ans <= std_logic_vector(to_unsigned(5, 32));
+        wait for 0.3 sec;
 
         --Logical XORI 00000001000010011
         o_opcode_decoder <= "00000001000010011";
@@ -134,6 +134,24 @@ architecture LSU_tester_arch of LSU_tester is
 
         --Compare SLTU 00000000110110011
         o_opcode_decoder <= "00000000110110011";
+
+        --Shift SLLI 00000000010010011
+        o_opcode_decoder <= "00000000010010011";
+
+        --Shift SRLI 00000001010010010
+        o_opcode_decoder <= "00000001010010010";
+
+        --Shift SRAI 01000001010010011
+        o_opcode_decoder <= "01000001010010011";
+
+        --Shift SLL 00000000010110011
+        o_opcode_decoder <= "00000000010110011";
+
+        --Shift SRL 00000001010110011
+        o_opcode_decoder <= "00000001010110011";
+
+        --Shift SRA 01000001010110011
+        o_opcode_decoder <= "01000001010110011";
         
         wait;
 	end process;
