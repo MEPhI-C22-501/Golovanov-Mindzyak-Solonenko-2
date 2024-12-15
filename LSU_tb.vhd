@@ -11,7 +11,7 @@ architecture LSU_tb_arch of LSU_tb is
     signal clk, rst, regWrite_decoder : std_logic;
     signal opcode_decoder, opcode_alu : std_logic_vector (16 downto 0);
     signal rs1_decoder, rs2_decoder, rd_decoder : std_logic_vector (4 downto 0);
-    signal imm_decoder, rd_ans, rs1_alu, rs2_alu, rd_alu, imm_alu : std_logic_vector (31 downto 0);
+    signal imm_decoder, rd_ans, rs1_alu, rs2_alu : std_logic_vector (31 downto 0);
     signal i_rs_csr_tb, o_rs_csr_tb : my_vector;
 
     begin
@@ -31,9 +31,7 @@ architecture LSU_tb_arch of LSU_tb is
             i_opcode_alu => opcode_alu,
             i_rs_csr => i_rs_csr_tb,
             i_rs1_alu => rs1_alu, 
-            i_rs2_alu => rs2_alu,
-            i_rd_alu => rd_alu,
-            i_imm_alu => imm_alu
+            i_rs2_alu => rs2_alu
         );
 
         LSU : entity work.LSU(LSU_arch) port map(
@@ -51,9 +49,7 @@ architecture LSU_tb_arch of LSU_tb is
             o_opcode_alu => opcode_alu,
             o_rs_csr => i_rs_csr_tb,
             o_rs1_alu => rs1_alu, 
-            o_rs2_alu => rs2_alu, 
-            o_rd_alu => rd_alu, 
-            o_imm_alu => imm_alu
+            o_rs2_alu => rs2_alu
         );
 
 end architecture;

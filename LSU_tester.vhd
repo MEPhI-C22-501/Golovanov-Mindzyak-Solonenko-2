@@ -13,7 +13,7 @@ entity LSU_tester is
 
         i_opcode_alu : in std_logic_vector (16 downto 0);
         i_rs_csr : in my_vector;
-        i_rs1_alu, i_rs2_alu, i_rd_alu, i_imm_alu : in std_logic_vector (31 downto 0));
+        i_rs1_alu, i_rs2_alu : in std_logic_vector (31 downto 0));
 end entity;
 
 

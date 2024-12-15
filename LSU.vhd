@@ -16,7 +16,7 @@ entity LSU is
 
         o_opcode_alu : out std_logic_vector (16 downto 0);
         o_rs_csr : out my_vector;
-        o_rs1_alu, o_rs2_alu, o_rd_alu, o_imm_alu : out std_logic_vector (31 downto 0));
+        o_rs1_alu, o_rs2_alu : out std_logic_vector (31 downto 0));
 
 end entity;
 
@@ -29,12 +29,16 @@ begin
                 if (i_rst = '1') then
 
                         o_opcode_alu <= std_logic_vector(to_unsigned(0, 17));
-                        o_imm_alu <= std_logic_vector(to_unsigned(0, 32));
 
                 elsif (rising_edge(i_clk)) then
                         
                         o_opcode_alu <= i_opcode_decoder;
-                        o_imm_alu <= i_imm_decoder;
+
+                        if(i_opcode_decoder = "00000000010010011" or i_opcode_decoder = "00000001010010010" or i_opcode_decoder = "01000001010010011" or i_opcode_decoder = "00000000000010011" or i_opcode_decoder = "00000001000010011" or i_opcode_decoder = "00000001100010011" or i_opcode_decoder = "00000001110010011" or i_opcode_decoder = "00000000100010011" or i_opcode_decoder = "00000000110010011") then
+
+                                o_rs2_alu <= i_imm_decoder;
+                        
+                        end if;
 
                 end if;
 
@@ -58,6 +62,7 @@ begin
                                         
                                         end if;
 
+                                        --Store
                                         if (i_opcode_decoder = "00000000000100011" and i_rd_decoder = std_logic_vector(to_unsigned(i, 5))) then -- Store SB
                                         
                                                 --o_rs_csr(i) <= i_imm_decoder;
@@ -72,7 +77,7 @@ begin
                                         
                                         end if;
 
-                                        
+                                        --Load
                                         if (i_opcode_decoder = "00000000000000011" and i_rd_decoder = std_logic_vector(to_unsigned(i, 5))) then --Load LB
                                         
 
@@ -100,7 +105,7 @@ begin
                                         
                                                 o_rs1_alu <= i_rs_csr(i);
                                         
-                                        elsif (i_rs2_decoder = std_logic_vector(to_unsigned(i, 5))) then
+                                        elsif ((i_rs2_decoder = std_logic_vector(to_unsigned(i, 5)) and (i_opcode_decoder = "00000000010110011" or i_opcode_decoder = "00000001010110011" or i_opcode_decoder = "01000001010110011" or i_opcode_decoder = "00000000000110011" or i_opcode_decoder = "01000000000110011" or i_opcode_decoder = "00000001000110011" or i_opcode_decoder = "00000001100110011" or i_opcode_decoder = "00000001110110011" or i_opcode_decoder = "00000000100110011" or i_opcode_decoder = "00000000110110011"))) then
                                         
                                                 o_rs2_alu <= i_rs_csr(i);
                                         
