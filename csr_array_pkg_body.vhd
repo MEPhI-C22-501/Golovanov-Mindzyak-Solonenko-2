@@ -2,12 +2,12 @@ library IEEE;
 use IEEE.STD_LOGIC_1164.ALL;
 use IEEE.NUMERIC_STD.ALL;  
 
-package body my_vector_pkg is
+package body csr_array_pkg is
 
     -- Реализация функции для создания нового вектора
-    function create_vector(init_value: std_logic_vector) return my_vector is
+    function create_vector(init_value: std_logic_vector) return csr_array is
     
-        variable new_vector : my_vector;
+        variable new_vector : csr_array;
     
     begin
 
@@ -22,5 +22,5 @@ package body my_vector_pkg is
     
     end function;
 
-end package body my_vector_pkg;
+end package body csr_array_pkg;
 

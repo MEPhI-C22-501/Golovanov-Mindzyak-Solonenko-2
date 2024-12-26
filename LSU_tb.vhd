@@ -1,7 +1,7 @@
 library IEEE;
 use IEEE.STD_LOGIC_1164.ALL;
 use IEEE.NUMERIC_STD.ALL;  
-use work.my_vector_pkg.all;
+use work.csr_array_pkg.all;
 
 entity LSU_tb is
 end entity;
@@ -12,7 +12,7 @@ architecture LSU_tb_arch of LSU_tb is
     signal opcode_decoder, opcode_alu : std_logic_vector (16 downto 0);
     signal rs1_decoder, rs2_decoder, rd_decoder : std_logic_vector (4 downto 0);
     signal imm_decoder, rd_ans, rs1_alu, rs2_alu : std_logic_vector (31 downto 0);
-    signal i_rs_csr_tb, o_rs_csr_tb : my_vector;
+    signal i_rs_csr_tb, o_rs_csr_tb : csr_array;
 
     begin
 
