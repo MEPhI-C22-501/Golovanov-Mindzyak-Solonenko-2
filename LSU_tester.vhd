@@ -5,15 +5,21 @@ use work.csr_array_pkg.all;
 
 entity LSU_tester is 
     Port ( 
-        o_clk, o_rst, o_regWrite_decoder : out std_logic;
-        o_opcode_decoder : out std_logic_vector (16 downto 0);
+        
+        o_clk, o_rst, o_write_enable_decoder : out std_logic;
+        o_opcode_decoder, o_opcode_write_decoder : out std_logic_vector (16 downto 0);
         o_rs1_decoder, o_rs2_decoder, o_rd_decoder : out std_logic_vector (4 downto 0);
         o_imm_decoder, o_rd_ans : out std_logic_vector (31 downto 0);
+        o_addr_memory_decoder : out std_logic_vector (15 downto 0);
         o_rs_csr : out csr_array;
 
         i_opcode_alu : in std_logic_vector (16 downto 0);
         i_rs_csr : in csr_array;
-        i_rs1_alu, i_rs2_alu : in std_logic_vector (31 downto 0));
+        i_rs1_alu, i_rs2_alu : in std_logic_vector (31 downto 0);
+        i_write_enable_memory : in std_logic;
+        i_addr_memory: in std_logic_vector (15 downto 0);
+        i_write_data_memory: in std_logic_vector (31 downto 0));
+
 end entity;
 
 
@@ -111,7 +117,7 @@ architecture LSU_tester_arch of LSU_tester is
 
         --Arithmetic ADD 00000000000110011
         o_opcode_decoder <= "00000000000110011";
-        o_regWrite_decoder <= '1';
+        o_write_enable_decoder <= '1';
         o_rs1_decoder <= std_logic_vector(to_unsigned(1, 5));
         o_rs2_decoder <= std_logic_vector(to_unsigned(2, 5)); 
         o_rd_decoder <= std_logic_vector(to_unsigned(7, 5));
@@ -120,7 +126,7 @@ architecture LSU_tester_arch of LSU_tester is
 
         --Arithmetic SUB 01000000000110011
         o_opcode_decoder <= "01000000000110011";
-        o_regWrite_decoder <= '1';
+        o_write_enable_decoder <= '1';
         o_rs1_decoder <= std_logic_vector(to_unsigned(1, 5));
         o_rs2_decoder <= std_logic_vector(to_unsigned(2, 5)); 
         o_rd_decoder <= std_logic_vector(to_unsigned(8, 5));
@@ -129,7 +135,7 @@ architecture LSU_tester_arch of LSU_tester is
 
         --Arithmetic ADDI 00000000000010011
         o_opcode_decoder <= "00000000000010011";
-        o_regWrite_decoder <= '1';
+        o_write_enable_decoder <= '1';
         o_rs1_decoder <= std_logic_vector(to_unsigned(1, 5)); 
         o_rd_decoder <= std_logic_vector(to_unsigned(9, 5));
         o_imm_decoder <= std_logic_vector(to_signed(8, 32));
@@ -138,7 +144,7 @@ architecture LSU_tester_arch of LSU_tester is
 
         --Shift SLL 00000000010110011
         o_opcode_decoder <= "00000000010110011";
-        o_regWrite_decoder <= '1';
+        o_write_enable_decoder <= '1';
         o_rs1_decoder <= std_logic_vector(to_unsigned(3, 5));
         o_rs2_decoder <= std_logic_vector(to_unsigned(4, 5)); 
         o_rd_decoder <= std_logic_vector(to_unsigned(10, 5));
@@ -147,7 +153,7 @@ architecture LSU_tester_arch of LSU_tester is
 
         --Shift SLLI 00000000010010011
         o_opcode_decoder <= "00000000010010011";
-        o_regWrite_decoder <= '1';
+        o_write_enable_decoder <= '1';
         o_rs1_decoder <= std_logic_vector(to_unsigned(3, 5));
         o_rd_decoder <= std_logic_vector(to_unsigned(11, 5));
         o_imm_decoder <= std_logic_vector(to_signed(16, 32));
@@ -156,7 +162,7 @@ architecture LSU_tester_arch of LSU_tester is
 
         --Shift SRL 00000001010110011
         o_opcode_decoder <= "00000001010110011";
-        o_regWrite_decoder <= '1';
+        o_write_enable_decoder <= '1';
         o_rs1_decoder <= std_logic_vector(to_unsigned(3, 5));
         o_rs2_decoder <= std_logic_vector(to_unsigned(4, 5)); 
         o_rd_decoder <= std_logic_vector(to_unsigned(12, 5));
@@ -165,7 +171,7 @@ architecture LSU_tester_arch of LSU_tester is
 
         --Shift SRLI 00000001010010010
         o_opcode_decoder <= "00000001010010010";
-        o_regWrite_decoder <= '1';
+        o_write_enable_decoder <= '1';
         o_rs1_decoder <= std_logic_vector(to_unsigned(3, 5));
         o_rd_decoder <= std_logic_vector(to_unsigned(13, 5));
         o_imm_decoder <= std_logic_vector(to_signed(16, 32));
@@ -174,7 +180,7 @@ architecture LSU_tester_arch of LSU_tester is
 
         --Shift SRA 01000001010110011
         o_opcode_decoder <= "01000001010110011";
-        o_regWrite_decoder <= '1';
+        o_write_enable_decoder <= '1';
         o_rs1_decoder <= std_logic_vector(to_unsigned(3, 5));
         o_rs2_decoder <= std_logic_vector(to_unsigned(4, 5)); 
         o_rd_decoder <= std_logic_vector(to_unsigned(14, 5));
@@ -183,7 +189,7 @@ architecture LSU_tester_arch of LSU_tester is
 
         --Shift SRAI 01000001010010011
         o_opcode_decoder <= "01000001010010011";
-        o_regWrite_decoder <= '1';
+        o_write_enable_decoder <= '1';
         o_rs1_decoder <= std_logic_vector(to_unsigned(3, 5));
         o_rd_decoder <= std_logic_vector(to_unsigned(15, 5));
         o_imm_decoder <= std_logic_vector(to_signed(16, 32));
@@ -192,7 +198,7 @@ architecture LSU_tester_arch of LSU_tester is
 
         --Compare SLT 00000000100110011
         o_opcode_decoder <= "00000000100110011";
-        o_regWrite_decoder <= '1';
+        o_write_enable_decoder <= '1';
         o_rs1_decoder <= std_logic_vector(to_unsigned(5, 5));
         o_rs2_decoder <= std_logic_vector(to_unsigned(6, 5)); 
         o_rd_decoder <= std_logic_vector(to_unsigned(16, 5));
@@ -201,7 +207,7 @@ architecture LSU_tester_arch of LSU_tester is
 
         --Compare SLTU 00000000110110011
         o_opcode_decoder <= "00000000110110011";
-        o_regWrite_decoder <= '1';
+        o_write_enable_decoder <= '1';
         o_rs1_decoder <= std_logic_vector(to_unsigned(5, 5));
         o_rs2_decoder <= std_logic_vector(to_unsigned(6, 5)); 
         o_rd_decoder <= std_logic_vector(to_unsigned(17, 5));
@@ -210,7 +216,7 @@ architecture LSU_tester_arch of LSU_tester is
 
         --Compare SLTI 00000000100010011
         o_opcode_decoder <= "00000000100010011";
-        o_regWrite_decoder <= '1';
+        o_write_enable_decoder <= '1';
         o_rs1_decoder <= std_logic_vector(to_unsigned(5, 5));
         o_rd_decoder <= std_logic_vector(to_unsigned(18, 5));
         o_imm_decoder <= std_logic_vector(to_signed(1, 32));
@@ -219,7 +225,7 @@ architecture LSU_tester_arch of LSU_tester is
 
         --Compare SLTIU 00000000110010011
         o_opcode_decoder <= "00000000110010011";
-        o_regWrite_decoder <= '1';
+        o_write_enable_decoder <= '1';
         o_rs1_decoder <= std_logic_vector(to_unsigned(5, 5));
         o_rd_decoder <= std_logic_vector(to_unsigned(19, 5));
         o_imm_decoder <= std_logic_vector(to_signed(1, 32));

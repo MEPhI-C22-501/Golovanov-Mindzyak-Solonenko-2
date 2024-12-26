@@ -10,6 +10,7 @@ entity LSU is
         i_opcode_decoder, i_opcode_write_decoder : in std_logic_vector (16 downto 0);
         i_rs1_decoder, i_rs2_decoder, i_rd_decoder : in std_logic_vector (4 downto 0);
         i_imm_decoder, i_rd_ans : in std_logic_vector (31 downto 0);
+        i_addr_memory_decoder : in std_logic_vector (15 downto 0);
         i_rs_csr : in csr_array;
 
         o_opcode_alu : out std_logic_vector (16 downto 0);
@@ -22,6 +23,9 @@ entity LSU is
 end entity;
 
 architecture LSU_arch of LSU is
+
+signal register_to_save, register_to_load : std_logic_vector (31 downto 0);
+
 begin
 
         process(i_clk, i_rst) is
@@ -34,6 +38,53 @@ begin
                 elsif (rising_edge(i_clk)) then
                         
                         o_opcode_alu <= i_opcode_decoder;
+
+                        if (i_opcode_decoder = "00000000000100011") then -- Store SB
+                                
+                                o_write_enable_memory <= '1';
+                                o_addr_memory <= i_addr_memory_decoder;
+                                        
+                        elsif (i_opcode_decoder = "00000000010100011") then -- Store SH
+                                
+                                o_write_enable_memory <= '1';
+                                o_addr_memory <= i_addr_memory_decoder;
+                                        
+                        elsif (i_opcode_decoder = "00000000100100011") then -- Store SW
+                                
+                                o_write_enable_memory <= '1';
+                                o_addr_memory <= i_addr_memory_decoder;
+
+                        elsif (i_opcode_decoder = "00000000000000011") then --Load LB
+                                
+                                o_write_enable_memory <= '0';
+                                o_addr_memory <= i_addr_memory_decoder;
+                                        
+                        elsif (i_opcode_decoder = "00000000010000011") then --Load LH
+                                        
+                                o_write_enable_memory <= '0';
+                                o_addr_memory <= i_addr_memory_decoder;
+                                        
+                        elsif (i_opcode_decoder = "00000000100000011") then --Load LW  
+                                        
+                                o_write_enable_memory <= '0';
+                                o_addr_memory <= i_addr_memory_decoder;
+                                        
+                        elsif (i_opcode_decoder = "00000001000000011") then --Load LBU 
+                                        
+                                o_write_enable_memory <= '0';  
+                                o_addr_memory <= i_addr_memory_decoder;
+                                        
+                        elsif (i_opcode_decoder = "00000001010000011") then --Load LHU 
+                                        
+                                o_write_enable_memory <= '0';
+                                o_addr_memory <= i_addr_memory_decoder;
+
+                        else          
+
+                                o_write_enable_memory <= '0';
+                                o_addr_memory <= std_logic_vector(to_unsigned(0, 16));
+
+                        end if;
 
                         if(i_opcode_decoder = "00000000010010011" or i_opcode_decoder = "00000001010010010" or i_opcode_decoder = "01000001010010011" or i_opcode_decoder = "00000000000010011" or i_opcode_decoder = "00000001000010011" or i_opcode_decoder = "00000001100010011" or i_opcode_decoder = "00000001110010011" or i_opcode_decoder = "00000000100010011" or i_opcode_decoder = "00000000110010011") then
 
@@ -58,12 +109,38 @@ begin
                                 for i in 0 to 31 loop
 
                                         if (i_write_enable_decoder = '1' and i_opcode_decoder = "00000000000000011" and i_rd_decoder = std_logic_vector(to_unsigned(i, 5))) then --Load LB
-                                        
-                                                o_rs_csr(i) <= i_rd_ans;
+                                                
+                                                --7 младших битов, все остальное знаковым битом (32)
+                                                for n in 0 to 7 loop
+
+                                                        register_to_save(n) <= i_rd_ans(n);
+
+                                                end loop;
+
+                                                for n in 8 to 31 loop
+
+                                                        register_to_save(n) <= i_rd_ans(31);
+
+                                                end loop;
+
+                                                o_rs_csr(i) <= register_to_save;
                                         
                                         elsif (i_write_enable_decoder = '1' and i_opcode_decoder = "00000000010000011" and i_rd_decoder = std_logic_vector(to_unsigned(i, 5))) then --Load LH
-                                        
-                                                o_rs_csr(i) <= i_rd_ans;
+                                                
+                                                --15 младших битов, все остальное знаковым битом (32)
+                                                for n in 0 to 14 loop
+
+                                                        register_to_save(n) <= i_rd_ans(n);
+
+                                                end loop;
+
+                                                for n in 15 to 31 loop
+
+                                                        register_to_save(n) <= i_rd_ans(31);
+
+                                                end loop;
+
+                                                o_rs_csr(i) <= register_to_save;
                                         
                                         elsif (i_write_enable_decoder = '1' and i_opcode_decoder = "00000000100000011" and i_rd_decoder = std_logic_vector(to_unsigned(i, 5))) then --Load LW  
                                         
@@ -85,15 +162,41 @@ begin
 
                                         --Store
                                         if (i_opcode_decoder = "00000000000100011" and i_rd_decoder = std_logic_vector(to_unsigned(i, 5))) then -- Store SB
-                                                --доделать
-                                                o_write_data_memory <= i_rs_csr(i);
+                                                
+                                                --7 младших битов, все остальное знаковым битом (32)
+                                                for n in 0 to 7 loop
+
+                                                        register_to_load(n) <= i_rs_csr(i)(n);
+
+                                                end loop;
+
+                                                for n in 8 to 31 loop
+
+                                                        register_to_load(n) <= i_rs_csr(i)(31);
+
+                                                end loop;
+                                                
+                                                o_write_data_memory <= register_to_load;
                                         
                                         elsif (i_opcode_decoder = "00000000010100011" and i_rd_decoder = std_logic_vector(to_unsigned(i, 5))) then -- Store SH
-                                                --доделать
-                                                o_write_data_memory <= i_rs_csr(i);
+                                                
+                                                --15 младших битов, все остальное знаковым битом (32)
+                                                for n in 0 to 14 loop
+
+                                                        register_to_load(n) <= i_rs_csr(i)(n);
+
+                                                end loop;
+
+                                                for n in 15 to 31 loop
+
+                                                        register_to_load(n) <= i_rs_csr(i)(31);
+
+                                                end loop;
+                                                
+                                                o_write_data_memory <= register_to_load;
                                         
                                         elsif (i_opcode_decoder = "00000000100100011" and i_rd_decoder = std_logic_vector(to_unsigned(i, 5))) then -- Store SW
-                                                --доделать
+                                                
                                                 o_write_data_memory <= i_rs_csr(i);
 
                                         else
@@ -115,66 +218,6 @@ begin
                                 end loop;
 
                         end if;
-
-        end process;
-
-        process(i_clk, i_rst) is
-	begin
-
-                if (i_rst = '1') then
-
-                        
-
-                elsif (rising_edge(i_clk)) then
-                        
-                        if (i_opcode_decoder = "00000000000100011") then -- Store SB
-                                
-                                o_write_enable_memory <= '1';
-                                --o_addr_memory <= ;
-                                        
-                        elsif (i_opcode_decoder = "00000000010100011") then -- Store SH
-                                
-                                o_write_enable_memory <= '1';
-                                --o_addr_memory <= ;
-                                        
-                        elsif (i_opcode_decoder = "00000000100100011") then -- Store SW
-                                
-                                o_write_enable_memory <= '1';
-                                --o_addr_memory <= ;
-
-                        elsif (i_opcode_decoder = "00000000000000011") then --Load LB
-                                
-                                o_write_enable_memory <= '0';
-                                --o_addr_memory <= ;
-                                        
-                        elsif (i_opcode_decoder = "00000000010000011") then --Load LH
-                                        
-                                o_write_enable_memory <= '0';
-                                --o_addr_memory <= ;
-                                        
-                        elsif (i_opcode_decoder = "00000000100000011") then --Load LW  
-                                        
-                                o_write_enable_memory <= '0';
-                                --o_addr_memory <= ;
-                                        
-                        elsif (i_opcode_decoder = "00000001000000011") then --Load LBU 
-                                        
-                                o_write_enable_memory <= '0';  
-                                --o_addr_memory <= ;
-                                        
-                        elsif (i_opcode_decoder = "00000001010000011") then --Load LHU 
-                                        
-                                o_write_enable_memory <= '0';
-                                --o_addr_memory <= ;
-
-                        else          
-
-                                o_write_enable_memory <= '0';
-                                o_addr_memory <= std_logic_vector(to_unsigned(0, 16));
-
-                        end if;
-
-                end if;
 
         end process;
 
