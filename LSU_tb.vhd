@@ -11,9 +11,10 @@ architecture LSU_tb_arch of LSU_tb is
     signal clk, rst, write_enable_tester_LSU, write_enable_LSU_memory, write_enable_memory_tester : std_logic;
     signal opcode_decoder, opcode_alu, opcode_write : std_logic_vector (16 downto 0);
     signal rs1_decoder, rs2_decoder, rd_decoder : std_logic_vector (4 downto 0);
-    signal imm_decoder, rd_ans, rs1_alu, rs2_alu, write_data_LSU_memory, write_data_memor_tester : std_logic_vector (31 downto 0);
+    signal rd_ans, rs1_alu, rs2_alu, write_data_LSU_memory, write_data_memor_tester : std_logic_vector (31 downto 0);
     signal i_rs_csr_tb, o_rs_csr_tb : csr_array;
     signal addr_tester_LSU, addr_LSU_memory, addr_memory_tester : std_logic_vector (15 downto 0);
+    signal imm_decoder : std_logic_vector (11 downto 0);
 
     begin
 

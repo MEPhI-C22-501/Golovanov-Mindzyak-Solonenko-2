@@ -9,8 +9,9 @@ entity LSU_tester is
         o_clk, o_rst, o_write_enable_decoder : out std_logic;
         o_opcode_decoder, o_opcode_write_decoder : out std_logic_vector (16 downto 0);
         o_rs1_decoder, o_rs2_decoder, o_rd_decoder : out std_logic_vector (4 downto 0);
-        o_imm_decoder, o_rd_ans : out std_logic_vector (31 downto 0);
+        o_rd_ans : out std_logic_vector (31 downto 0);
         o_addr_memory_decoder : out std_logic_vector (15 downto 0);
+        o_imm_decoder : out std_logic_vector (11 downto 0);
         o_rs_csr : out csr_array;
 
         i_opcode_alu : in std_logic_vector (16 downto 0);
@@ -68,50 +69,50 @@ architecture LSU_tester_arch of LSU_tester is
         --Store SB 00000000000100011
         --o_opcode_decoder <= "00000000000100011";
         --o_rd_decoder <= std_logic_vector(to_unsigned(0, 5));
-        --o_imm_decoder <= std_logic_vector(to_unsigned(1, 32));
+        --o_imm_decoder <= std_logic_vector(to_unsigned(1, 12));
         --wait for 0.3 sec;
 
         --Store SH 00000000010100011
         --o_opcode_decoder <= "00000000010100011";
         --o_rd_decoder <= std_logic_vector(to_unsigned(1, 5));
-        --o_imm_decoder <= std_logic_vector(to_unsigned(2, 32));
+        --o_imm_decoder <= std_logic_vector(to_unsigned(2, 12));
         --wait for 0.3 sec;
 
 
         --Store SW 00000000100100011
         o_opcode_decoder <= "00000000100100011";
         o_rd_decoder <= std_logic_vector(to_unsigned(1, 5));
-        o_imm_decoder <= std_logic_vector(to_signed(5, 32));
+        o_imm_decoder <= std_logic_vector(to_signed(5, 12));
         wait for 0.3 sec;
 
         --Store SW 00000000100100011
         o_opcode_decoder <= "00000000100100011";
         o_rd_decoder <= std_logic_vector(to_unsigned(2, 5));
-        o_imm_decoder <= std_logic_vector(to_signed(8, 32));
+        o_imm_decoder <= std_logic_vector(to_signed(8, 12));
         wait for 0.3 sec;
 
         --Store SW 00000000100100011
         o_opcode_decoder <= "00000000100100011";
         o_rd_decoder <= std_logic_vector(to_unsigned(3, 5));
-        o_imm_decoder <= std_logic_vector(to_signed(4096, 32));
+        o_imm_decoder <= std_logic_vector(to_signed(4096, 12));
         wait for 0.3 sec;
 
         --Store SW 00000000100100011
         o_opcode_decoder <= "00000000100100011";
         o_rd_decoder <= std_logic_vector(to_unsigned(4, 5));
-        o_imm_decoder <= std_logic_vector(to_signed(16, 32));
+        o_imm_decoder <= std_logic_vector(to_signed(16, 12));
         wait for 0.3 sec;
 
         --Store SW 00000000100100011
         o_opcode_decoder <= "00000000100100011";
         o_rd_decoder <= std_logic_vector(to_unsigned(5, 5));
-        o_imm_decoder <= std_logic_vector(to_signed(16, 32));
+        o_imm_decoder <= std_logic_vector(to_signed(16, 12));
         wait for 0.3 sec;
 
         --Store SW 00000000100100011
         o_opcode_decoder <= "00000000100100011";
         o_rd_decoder <= std_logic_vector(to_unsigned(6, 5));
-        o_imm_decoder <= std_logic_vector(to_signed(1, 32));
+        o_imm_decoder <= std_logic_vector(to_signed(1, 12));
         wait for 0.3 sec;
 
 
@@ -138,7 +139,7 @@ architecture LSU_tester_arch of LSU_tester is
         o_write_enable_decoder <= '1';
         o_rs1_decoder <= std_logic_vector(to_unsigned(1, 5)); 
         o_rd_decoder <= std_logic_vector(to_unsigned(9, 5));
-        o_imm_decoder <= std_logic_vector(to_signed(8, 32));
+        o_imm_decoder <= std_logic_vector(to_signed(8, 12));
         o_rd_ans <= std_logic_vector(to_signed(13, 32));
         wait for 0.3 sec;
 
@@ -156,7 +157,7 @@ architecture LSU_tester_arch of LSU_tester is
         o_write_enable_decoder <= '1';
         o_rs1_decoder <= std_logic_vector(to_unsigned(3, 5));
         o_rd_decoder <= std_logic_vector(to_unsigned(11, 5));
-        o_imm_decoder <= std_logic_vector(to_signed(16, 32));
+        o_imm_decoder <= std_logic_vector(to_signed(16, 12));
         o_rd_ans <= std_logic_vector(to_signed(2097152, 32));
         wait for 0.3 sec;
 
@@ -174,7 +175,7 @@ architecture LSU_tester_arch of LSU_tester is
         o_write_enable_decoder <= '1';
         o_rs1_decoder <= std_logic_vector(to_unsigned(3, 5));
         o_rd_decoder <= std_logic_vector(to_unsigned(13, 5));
-        o_imm_decoder <= std_logic_vector(to_signed(16, 32));
+        o_imm_decoder <= std_logic_vector(to_signed(16, 12));
         o_rd_ans <= std_logic_vector(to_signed(64, 32));
         wait for 0.3 sec;
 
@@ -192,7 +193,7 @@ architecture LSU_tester_arch of LSU_tester is
         o_write_enable_decoder <= '1';
         o_rs1_decoder <= std_logic_vector(to_unsigned(3, 5));
         o_rd_decoder <= std_logic_vector(to_unsigned(15, 5));
-        o_imm_decoder <= std_logic_vector(to_signed(16, 32));
+        o_imm_decoder <= std_logic_vector(to_signed(16, 12));
         o_rd_ans <= std_logic_vector(to_signed(64, 32));
         wait for 0.3 sec;
 
@@ -219,7 +220,7 @@ architecture LSU_tester_arch of LSU_tester is
         o_write_enable_decoder <= '1';
         o_rs1_decoder <= std_logic_vector(to_unsigned(5, 5));
         o_rd_decoder <= std_logic_vector(to_unsigned(18, 5));
-        o_imm_decoder <= std_logic_vector(to_signed(1, 32));
+        o_imm_decoder <= std_logic_vector(to_signed(1, 12));
         o_rd_ans <= std_logic_vector(to_signed(0, 32));
         wait for 0.3 sec;
 
@@ -228,7 +229,7 @@ architecture LSU_tester_arch of LSU_tester is
         o_write_enable_decoder <= '1';
         o_rs1_decoder <= std_logic_vector(to_unsigned(5, 5));
         o_rd_decoder <= std_logic_vector(to_unsigned(19, 5));
-        o_imm_decoder <= std_logic_vector(to_signed(1, 32));
+        o_imm_decoder <= std_logic_vector(to_signed(1, 12));
         o_rd_ans <= std_logic_vector(to_signed(0, 32));
         wait for 0.3 sec;
 
