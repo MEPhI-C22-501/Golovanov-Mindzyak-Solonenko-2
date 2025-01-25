@@ -195,7 +195,7 @@ begin
                                                 
                                         o_write_data_memory <= i_rs_csr(i);
 
-                                else
+                                elsif (i_opcode_decoder /= "00000000000100011" and i_opcode_decoder /= "00000000010100011" and i_opcode_decoder /= "00000000100100011") then
                                         
                                         o_write_data_memory <= std_logic_vector(to_unsigned(0, 32));
 
@@ -212,7 +212,7 @@ begin
 
                                         o_addr_memory <= register_to_addres;
 
-                                else          
+                                elsif ((i_opcode_decoder /= "00000000000100011" and i_opcode_decoder /= "00000000010100011" and i_opcode_decoder /= "00000000100100011" and i_opcode_decoder /= "00000000000000011" and i_opcode_decoder /= "00000000010000011" and i_opcode_decoder /= "00000000100000011" and i_opcode_decoder /= "00000001000000011" and i_opcode_decoder /= "00000001010000011")) then          
 
                                         o_addr_memory <= std_logic_vector(to_unsigned(0, 16));
 
