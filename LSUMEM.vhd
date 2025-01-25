@@ -1,7 +1,6 @@
 library IEEE;
 use IEEE.STD_LOGIC_1164.ALL;
 use IEEE.NUMERIC_STD.ALL;  
-use work.csr_array_pkg.all;
 
 entity LSUMEM is
 	Port (

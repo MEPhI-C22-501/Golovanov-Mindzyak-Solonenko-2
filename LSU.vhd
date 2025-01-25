@@ -1,7 +1,7 @@
 library IEEE;
 use IEEE.STD_LOGIC_1164.ALL;
 use IEEE.NUMERIC_STD.ALL;  
-use work.csr_array_pkg.all;
+use work.register_file_pkg.all;
 
 entity LSU is
 	Port (
@@ -11,15 +11,21 @@ entity LSU is
         i_rs1_decoder, i_rs2_decoder, i_rd_decoder : in std_logic_vector (4 downto 0);
         i_rd_ans : in std_logic_vector (31 downto 0);
         i_imm_decoder : in std_logic_vector (11 downto 0);
-        i_rs_csr : in csr_array;
+        i_rs_csr : in registers_array;
+        i_spec_reg_or_memory_decoder : in std_logic; --продумать и написать логику 
+        i_program_counter_csr : in std_logic_vector (15 downto 0); --продумать и написать логику 
+        i_addr_spec_reg_decoder : in std_logic_vector (11 downto 0); --продумать и написать логику СКОРЕЕ ВСЕГО НЕ НУЖНО 
+        i_spec_reg_data_csr : in std_logic_vector (31 downto 0); --продумать и написать логику, это будет получаться через write_back 
 
         o_opcode_alu : out std_logic_vector (16 downto 0);
-        o_rs_csr : out csr_array;
+        o_rs_csr : out registers_array;
         o_rs1_alu, o_rs2_alu : out std_logic_vector (31 downto 0);
         o_write_enable_memory, o_write_enable_csr : out std_logic;
         o_addr_memory: out std_logic_vector (15 downto 0);
         o_write_data_memory: out std_logic_vector (31 downto 0);
-        o_rd_csr : out std_logic_vector (4 downto 0));
+        o_rd_csr : out std_logic_vector (4 downto 0);
+        o_addr_spec_reg_csr : in std_logic_vector (11 downto 0)  --продумать и написать логику
+        );
 
 end entity;
 

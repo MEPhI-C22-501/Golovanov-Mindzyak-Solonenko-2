@@ -1,7 +1,7 @@
 library IEEE;
 use IEEE.STD_LOGIC_1164.ALL;
 use IEEE.NUMERIC_STD.ALL;  
-use work.csr_array_pkg.all;
+use work.register_file_pkg.all;
 
 entity LSU_tb is
 end entity;
@@ -52,16 +52,13 @@ architecture LSU_tb_arch of LSU_tb is
             i_clk => clk,
             i_rst => rst,        	
             i_instr => , --тут должна быть связь с тестером
-            o_r_type => , --этого вроде нет
-            o_s_type => , --этого вроде нет
-            o_i_type => , --этого вроде нет
             o_rs1 => connection_decoder_LSU_rs1, 
             o_rs2 => connection_decoder_LSU_rs2, 
             o_rd => connection_decoder_LSU_rd, 
             o_imm => connection_decoder_LSU_imm, 
-            o_read_to_LSU => , 	--не понял что это
-            o_write_to_LSU => , --не понял что это 	
-            o_LSU_code => --не понял что это 	
+            o_write_to_LSU => connection_decoder_LSU_write_enable, 
+            o_LSU_code => connection_decoder_LSU_opcode,
+            o_LSU_code_post => connection_decoder_LSU_opcode_write
 
         );
 
