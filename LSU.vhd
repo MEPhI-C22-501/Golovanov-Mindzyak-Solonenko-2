@@ -3,6 +3,8 @@ use IEEE.STD_LOGIC_1164.ALL;
 use IEEE.NUMERIC_STD.ALL;  
 use work.register_file_pkg.all;
 
+--00000000100000011 
+
 entity LSU is
 	Port (
         
@@ -12,10 +14,10 @@ entity LSU is
         i_rd_ans : in std_logic_vector (31 downto 0);
         i_imm_decoder : in std_logic_vector (11 downto 0);
         i_rs_csr : in registers_array;
-        i_spec_reg_or_memory_decoder : in std_logic; --продумать и написать логику 
-        i_program_counter_csr : in std_logic_vector (15 downto 0); --продумать и написать логику 
-        i_addr_spec_reg_decoder : in std_logic_vector (11 downto 0); --продумать и написать логику СКОРЕЕ ВСЕГО НЕ НУЖНО 
-        i_spec_reg_data_csr : in std_logic_vector (31 downto 0); --продумать и написать логику, это будет получаться через write_back 
+        i_spec_reg_or_memory_decoder : in std_logic; --продумать и написать логику Если 1, то чтение из спец регистров, если 0 то из памяти 
+        i_program_counter_csr : in std_logic_vector (15 downto 0); --Просто получаю 
+        i_addr_spec_reg_decoder : in std_logic_vector (11 downto 0); --продумать и написать логику Адрес берем из регестра 
+        --i_spec_reg_data_csr : in std_logic_vector (31 downto 0); --продумать и написать логику, это будет получаться через write_back 
 
         o_opcode_alu : out std_logic_vector (16 downto 0);
         o_rs_csr : out registers_array;
@@ -24,7 +26,7 @@ entity LSU is
         o_addr_memory: out std_logic_vector (15 downto 0);
         o_write_data_memory: out std_logic_vector (31 downto 0);
         o_rd_csr : out std_logic_vector (4 downto 0);
-        o_addr_spec_reg_csr : in std_logic_vector (11 downto 0)  --продумать и написать логику
+        o_addr_spec_reg_csr : out std_logic_vector (11 downto 0)  --продумать и написать логику Адрес берем из регестра
         );
 
 end entity;
@@ -78,6 +80,10 @@ begin
 
                         end if;
 
+
+                        o_write_enable_csr <= i_write_enable_decoder;
+
+
                         --реализация 32 регистров
                         for i in 0 to 31 loop
 
@@ -97,7 +103,7 @@ begin
                                         end loop;
 
                                         o_rs_csr(i) <= register_to_save;
-                                        o_write_enable_csr <= '1';
+                                        --o_write_enable_csr <= '1';
                                         o_rd_csr <= i_rd_decoder;
                                         
                                 elsif (i_write_enable_decoder = '1' and i_opcode_decoder = "00000000010000011" and i_rd_decoder = std_logic_vector(to_unsigned(i, 5))) then --Load LH
@@ -116,36 +122,36 @@ begin
                                         end loop;
 
                                         o_rs_csr(i) <= register_to_save;
-                                        o_write_enable_csr <= '1';
+                                        --o_write_enable_csr <= '1';
                                         o_rd_csr <= i_rd_decoder;
                                         
                                 elsif (i_write_enable_decoder = '1' and i_opcode_decoder = "00000000100000011" and i_rd_decoder = std_logic_vector(to_unsigned(i, 5))) then --Load LW  
                                         
                                         o_rs_csr(i) <= i_rd_ans;
-                                        o_write_enable_csr <= '1';
+                                        --o_write_enable_csr <= '1';
                                         o_rd_csr <= i_rd_decoder;
                                         
                                 elsif (i_write_enable_decoder = '1' and i_opcode_decoder = "00000001000000011" and i_rd_decoder = std_logic_vector(to_unsigned(i, 5))) then --Load LBU 
                                         
                                         o_rs_csr(i) <= i_rd_ans;
-                                        o_write_enable_csr <= '1';
+                                        --o_write_enable_csr <= '1';
                                         o_rd_csr <= i_rd_decoder;
                                         
                                 elsif (i_write_enable_decoder = '1' and i_opcode_decoder = "00000001010000011" and i_rd_decoder = std_logic_vector(to_unsigned(i, 5))) then --Load LHU 
                                                 
                                         o_rs_csr(i) <= i_rd_ans;
-                                        o_write_enable_csr <= '1';
+                                        --o_write_enable_csr <= '1';
                                         o_rd_csr <= i_rd_decoder;
                                         
                                 elsif (i_write_enable_decoder = '1' and i_rd_decoder = std_logic_vector(to_unsigned(i, 5))) then --Save answer
                                                 
                                         o_rs_csr(i) <= i_rd_ans;
-                                        o_write_enable_csr <= '1';
+                                        --o_write_enable_csr <= '1';
                                         o_rd_csr <= i_rd_decoder;
                                         
                                 else 
                                         
-                                        o_write_enable_csr <= '0';
+                                        --o_write_enable_csr <= '0';
                                         o_rd_csr <= std_logic_vector(to_unsigned(0, 5));
                                         
                                 end if;
