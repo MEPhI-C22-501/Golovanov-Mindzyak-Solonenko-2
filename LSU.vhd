@@ -134,7 +134,7 @@ begin
                                         o_rs_csr(i) <= i_rd_ans;
                                         o_rd_csr <= i_rd_decoder;
                                         
-                                else 
+                                elsif (i_write_enable_decoder = '0') then
                                         
                                         o_rd_csr <= std_logic_vector(to_unsigned(0, 5));
                                         
