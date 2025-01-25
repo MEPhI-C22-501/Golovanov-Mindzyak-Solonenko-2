@@ -3,8 +3,6 @@ use IEEE.STD_LOGIC_1164.ALL;
 use IEEE.NUMERIC_STD.ALL;  
 use work.register_file_pkg.all;
 
---00000000100000011 
-
 entity LSU is
 	Port (
         
@@ -14,9 +12,10 @@ entity LSU is
         i_rd_ans : in std_logic_vector (31 downto 0);
         i_imm_decoder : in std_logic_vector (11 downto 0);
         i_rs_csr : in registers_array;
-        i_spec_reg_or_memory_decoder : in std_logic; --продумать и написать логику Если 1, то чтение из спец регистров, если 0 то из памяти 
-        i_program_counter_csr : in std_logic_vector (15 downto 0); --Просто получаю 
-        i_addr_spec_reg_decoder : in std_logic_vector (11 downto 0); --продумать и написать логику Адрес берем из регестра 
+        i_spec_reg_or_memory_decoder : in std_logic; --Если 1, то чтение из спец регистров, если 0 то из памяти (сделал)
+        i_program_counter_csr : in std_logic_vector (15 downto 0); --Просто получаю (сделал)
+
+        --i_addr_spec_reg_decoder : in std_logic_vector (11 downto 0); --продумать и написать логику Адрес берем из регестра 
         --i_spec_reg_data_csr : in std_logic_vector (31 downto 0); --продумать и написать логику, это будет получаться через write_back 
 
         o_opcode_alu : out std_logic_vector (16 downto 0);
@@ -26,7 +25,7 @@ entity LSU is
         o_addr_memory: out std_logic_vector (15 downto 0);
         o_write_data_memory: out std_logic_vector (31 downto 0);
         o_rd_csr : out std_logic_vector (4 downto 0);
-        o_addr_spec_reg_csr : out std_logic_vector (11 downto 0)  --продумать и написать логику Адрес берем из регестра
+        o_addr_spec_reg_csr : out std_logic_vector (11 downto 0)  --Адрес берем из регестра (сделал)
         );
 
 end entity;
@@ -182,9 +181,21 @@ begin
 
                                 end if;
 
-                                --связь с LSUMEM addres
-                                if ((i_opcode_decoder = "00000000000100011" or i_opcode_decoder = "00000000010100011" or i_opcode_decoder = "00000000100100011" or i_opcode_decoder = "00000000000000011" or i_opcode_decoder = "00000000010000011" or i_opcode_decoder = "00000000100000011" or i_opcode_decoder = "00000001000000011" or i_opcode_decoder = "00000001010000011") and i_rs1_decoder = std_logic_vector(to_unsigned(i, 5))) then 
+                                --связь с LSUMEM и spec_reg addres
+                                if (i_opcode_decoder = "00000000100000011" and i_spec_reg_or_memory_decoder = '1' and i_rs1_decoder = std_logic_vector(to_unsigned(i, 5))) then
+                                        
+                                        for n in 0 to 11 loop
+
+                                                o_addr_spec_reg_csr(n) <= i_rs_csr(i)(n);
+
+                                        end loop;
+
+                                        o_addr_memory <= std_logic_vector(to_unsigned(0, 16));
+
+                                elsif ((i_opcode_decoder = "00000000000100011" or i_opcode_decoder = "00000000010100011" or i_opcode_decoder = "00000000100100011" or i_opcode_decoder = "00000000000000011" or i_opcode_decoder = "00000000010000011" or i_opcode_decoder = "00000000100000011" or i_opcode_decoder = "00000001000000011" or i_opcode_decoder = "00000001010000011") and i_rs1_decoder = std_logic_vector(to_unsigned(i, 5))) then 
                                 
+                                        o_addr_spec_reg_csr <= std_logic_vector(to_unsigned(0, 12));
+
                                         for n in 0 to 15 loop
 
                                                 o_addr_memory(n) <= i_rs_csr(i)(n);
@@ -193,6 +204,7 @@ begin
 
                                 elsif (i_opcode_decoder /= "00000000000100011" and i_opcode_decoder /= "00000000010100011" and i_opcode_decoder /= "00000000100100011" and i_opcode_decoder /= "00000000000000011" and i_opcode_decoder /= "00000000010000011" and i_opcode_decoder /= "00000000100000011" and i_opcode_decoder /= "00000001000000011" and i_opcode_decoder /= "00000001010000011") then          
 
+                                        o_addr_spec_reg_csr <= std_logic_vector(to_unsigned(0, 12));
                                         o_addr_memory <= std_logic_vector(to_unsigned(0, 16));
 
                                 end if;
