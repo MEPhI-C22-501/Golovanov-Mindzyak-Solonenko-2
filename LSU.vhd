@@ -46,6 +46,9 @@ begin
                         o_opcode_alu <= std_logic_vector(to_unsigned(0, 17));
 
                 elsif (rising_edge(i_clk)) then
+
+                        o_addr_memory <= register_to_addres;
+                        o_write_enable_csr <= i_write_enable_decoder;
                         
                         --передача кода операции в ALU
                         o_opcode_alu <= i_opcode_decoder;
@@ -79,9 +82,6 @@ begin
                                 o_write_enable_memory <= '0';
 
                         end if;
-
-
-                        o_write_enable_csr <= i_write_enable_decoder;
 
 
                         --реализация 32 регистров
@@ -210,11 +210,9 @@ begin
 
                                         end loop;
 
-                                        o_addr_memory <= register_to_addres;
+                                elsif (i_opcode_decoder /= "00000000000100011" and i_opcode_decoder /= "00000000010100011" and i_opcode_decoder /= "00000000100100011" and i_opcode_decoder /= "00000000000000011" and i_opcode_decoder /= "00000000010000011" and i_opcode_decoder /= "00000000100000011" and i_opcode_decoder /= "00000001000000011" and i_opcode_decoder /= "00000001010000011") then          
 
-                                elsif ((i_opcode_decoder /= "00000000000100011" and i_opcode_decoder /= "00000000010100011" and i_opcode_decoder /= "00000000100100011" and i_opcode_decoder /= "00000000000000011" and i_opcode_decoder /= "00000000010000011" and i_opcode_decoder /= "00000000100000011" and i_opcode_decoder /= "00000001000000011" and i_opcode_decoder /= "00000001010000011")) then          
-
-                                        o_addr_memory <= std_logic_vector(to_unsigned(0, 16));
+                                        register_to_addres <= std_logic_vector(to_unsigned(0, 16));
 
                                 end if;
 
