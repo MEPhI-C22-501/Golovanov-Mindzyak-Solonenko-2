@@ -33,9 +33,6 @@ end entity;
 
 architecture LSU_arch of LSU is
 
-signal register_to_save, register_to_load, register_to_prepare_imm : std_logic_vector (31 downto 0);
-signal register_to_addres : std_logic_vector (15 downto 0);
-
 begin
 
         process(i_clk, i_rst) is
@@ -47,7 +44,6 @@ begin
 
                 elsif (rising_edge(i_clk)) then
 
-                        o_addr_memory <= register_to_addres;
                         o_write_enable_csr <= i_write_enable_decoder;
                         
                         --передача кода операции в ALU
@@ -56,15 +52,13 @@ begin
                         --передача imm в ALU
                         if(i_opcode_decoder = "00000000010010011" or i_opcode_decoder = "00000001010010010" or i_opcode_decoder = "01000001010010011" or i_opcode_decoder = "00000000000010011" or i_opcode_decoder = "00000001000010011" or i_opcode_decoder = "00000001100010011" or i_opcode_decoder = "00000001110010011" or i_opcode_decoder = "00000000100010011" or i_opcode_decoder = "00000000110010011") then
 
-                                register_to_prepare_imm <= std_logic_vector(to_unsigned(0, 32));
+                                o_rs2_alu <= std_logic_vector(to_unsigned(0, 32));
 
                                 for n in 0 to 11 loop
 
-                                        register_to_prepare_imm(n) <= i_imm_decoder(n);
+                                        o_rs2_alu(n) <= i_imm_decoder(n);
 
                                 end loop;
-
-                                o_rs2_alu <= register_to_prepare_imm;
                         
                         end if;
 
@@ -92,18 +86,16 @@ begin
                                         --7 младших битов, все остальное знаковым битом (32)
                                         for n in 0 to 7 loop
 
-                                                register_to_save(n) <= i_rd_ans(n);
+                                                o_rs_csr(i)(n) <= i_rd_ans(n);
 
                                         end loop;
 
                                         for n in 8 to 31 loop
 
-                                                register_to_save(n) <= i_rd_ans(31);
+                                                o_rs_csr(i)(n) <= i_rd_ans(31);
 
                                         end loop;
 
-                                        o_rs_csr(i) <= register_to_save;
-                                        --o_write_enable_csr <= '1';
                                         o_rd_csr <= i_rd_decoder;
                                         
                                 elsif (i_write_enable_decoder = '1' and i_opcode_decoder = "00000000010000011" and i_rd_decoder = std_logic_vector(to_unsigned(i, 5))) then --Load LH
@@ -111,47 +103,40 @@ begin
                                         --15 младших битов, все остальное знаковым битом (32)
                                         for n in 0 to 14 loop
 
-                                                register_to_save(n) <= i_rd_ans(n);
+                                                o_rs_csr(i)(n) <= i_rd_ans(n);
 
                                         end loop;
 
                                         for n in 15 to 31 loop
 
-                                                register_to_save(n) <= i_rd_ans(31);
+                                                o_rs_csr(i)(n) <= i_rd_ans(31);
 
                                         end loop;
 
-                                        o_rs_csr(i) <= register_to_save;
-                                        --o_write_enable_csr <= '1';
                                         o_rd_csr <= i_rd_decoder;
                                         
                                 elsif (i_write_enable_decoder = '1' and i_opcode_decoder = "00000000100000011" and i_rd_decoder = std_logic_vector(to_unsigned(i, 5))) then --Load LW  
                                         
                                         o_rs_csr(i) <= i_rd_ans;
-                                        --o_write_enable_csr <= '1';
                                         o_rd_csr <= i_rd_decoder;
                                         
                                 elsif (i_write_enable_decoder = '1' and i_opcode_decoder = "00000001000000011" and i_rd_decoder = std_logic_vector(to_unsigned(i, 5))) then --Load LBU 
                                         
                                         o_rs_csr(i) <= i_rd_ans;
-                                        --o_write_enable_csr <= '1';
                                         o_rd_csr <= i_rd_decoder;
                                         
                                 elsif (i_write_enable_decoder = '1' and i_opcode_decoder = "00000001010000011" and i_rd_decoder = std_logic_vector(to_unsigned(i, 5))) then --Load LHU 
                                                 
                                         o_rs_csr(i) <= i_rd_ans;
-                                        --o_write_enable_csr <= '1';
                                         o_rd_csr <= i_rd_decoder;
                                         
                                 elsif (i_write_enable_decoder = '1' and i_rd_decoder = std_logic_vector(to_unsigned(i, 5))) then --Save answer
                                                 
                                         o_rs_csr(i) <= i_rd_ans;
-                                        --o_write_enable_csr <= '1';
                                         o_rd_csr <= i_rd_decoder;
                                         
                                 else 
                                         
-                                        --o_write_enable_csr <= '0';
                                         o_rd_csr <= std_logic_vector(to_unsigned(0, 5));
                                         
                                 end if;
@@ -162,34 +147,30 @@ begin
                                         --7 младших битов, все остальное знаковым битом (32)
                                         for n in 0 to 7 loop
 
-                                                register_to_load(n) <= i_rs_csr(i)(n);
+                                                o_write_data_memory(n) <= i_rs_csr(i)(n);
 
                                         end loop;
 
                                         for n in 8 to 31 loop
 
-                                                register_to_load(n) <= i_rs_csr(i)(31);
+                                                o_write_data_memory(n) <= i_rs_csr(i)(31);
 
                                         end loop;
-                                                
-                                        o_write_data_memory <= register_to_load;
                                         
                                 elsif (i_opcode_decoder = "00000000010100011" and i_rs2_decoder = std_logic_vector(to_unsigned(i, 5))) then -- Store SH
                                                 
                                         --15 младших битов, все остальное знаковым битом (32)
                                         for n in 0 to 14 loop
 
-                                                register_to_load(n) <= i_rs_csr(i)(n);
+                                                o_write_data_memory(n) <= i_rs_csr(i)(n);
 
                                         end loop;
 
                                         for n in 15 to 31 loop
 
-                                                register_to_load(n) <= i_rs_csr(i)(31);
+                                                o_write_data_memory(n) <= i_rs_csr(i)(31);
 
                                         end loop;
-                                                
-                                        o_write_data_memory <= register_to_load;
                                         
                                 elsif (i_opcode_decoder = "00000000100100011" and i_rs2_decoder = std_logic_vector(to_unsigned(i, 5))) then -- Store SW
                                                 
@@ -206,13 +187,13 @@ begin
                                 
                                         for n in 0 to 15 loop
 
-                                                register_to_addres(n) <= i_rs_csr(i)(n);
+                                                o_addr_memory(n) <= i_rs_csr(i)(n);
 
                                         end loop;
 
                                 elsif (i_opcode_decoder /= "00000000000100011" and i_opcode_decoder /= "00000000010100011" and i_opcode_decoder /= "00000000100100011" and i_opcode_decoder /= "00000000000000011" and i_opcode_decoder /= "00000000010000011" and i_opcode_decoder /= "00000000100000011" and i_opcode_decoder /= "00000001000000011" and i_opcode_decoder /= "00000001010000011") then          
 
-                                        register_to_addres <= std_logic_vector(to_unsigned(0, 16));
+                                        o_addr_memory <= std_logic_vector(to_unsigned(0, 16));
 
                                 end if;
 
