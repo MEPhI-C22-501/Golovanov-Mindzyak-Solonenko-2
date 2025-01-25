@@ -157,7 +157,7 @@ begin
                                 end if;
 
                                 --связь с LSUMEM data
-                                if (i_opcode_decoder = "00000000000100011" and i_rd_decoder = std_logic_vector(to_unsigned(i, 5))) then -- Store SB
+                                if (i_opcode_decoder = "00000000000100011" and i_rs2_decoder = std_logic_vector(to_unsigned(i, 5))) then -- Store SB
                                                 
                                         --7 младших битов, все остальное знаковым битом (32)
                                         for n in 0 to 7 loop
@@ -174,7 +174,7 @@ begin
                                                 
                                         o_write_data_memory <= register_to_load;
                                         
-                                elsif (i_opcode_decoder = "00000000010100011" and i_rd_decoder = std_logic_vector(to_unsigned(i, 5))) then -- Store SH
+                                elsif (i_opcode_decoder = "00000000010100011" and i_rs2_decoder = std_logic_vector(to_unsigned(i, 5))) then -- Store SH
                                                 
                                         --15 младших битов, все остальное знаковым битом (32)
                                         for n in 0 to 14 loop
@@ -191,7 +191,7 @@ begin
                                                 
                                         o_write_data_memory <= register_to_load;
                                         
-                                elsif (i_opcode_decoder = "00000000100100011" and i_rd_decoder = std_logic_vector(to_unsigned(i, 5))) then -- Store SW
+                                elsif (i_opcode_decoder = "00000000100100011" and i_rs2_decoder = std_logic_vector(to_unsigned(i, 5))) then -- Store SW
                                                 
                                         o_write_data_memory <= i_rs_csr(i);
 
