@@ -40,6 +40,19 @@ begin
 
                         o_opcode_alu <= std_logic_vector(to_unsigned(0, 17));
 
+                        
+                        o_rs1_alu <= std_logic_vector(to_unsigned(0, 32));
+                        o_rs2_alu <= std_logic_vector(to_unsigned(0, 32));
+                        o_write_enable_memory <= '0';
+                        o_write_enable_csr <= '0';
+                        o_addr_memory <= std_logic_vector(to_unsigned(0, 16));
+                        o_write_data_memory <= std_logic_vector(to_unsigned(0, 32));
+                        o_rd_csr <= std_logic_vector(to_unsigned(0, 5));
+                        o_addr_spec_reg_csr <= std_logic_vector(to_unsigned(0, 12));
+                        o_program_counter <= std_logic_vector(to_unsigned(0, 16));
+                        o_program_counter_write_enable <= '0';
+                        o_rs_csr <= (others => (others => '0'));
+
                 elsif (rising_edge(i_clk)) then
 
                         o_write_enable_csr <= i_write_enable_decoder;

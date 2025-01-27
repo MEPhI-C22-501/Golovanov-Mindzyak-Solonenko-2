@@ -1,10 +1,10 @@
-library ieee;
-use ieee.std_logic_1164.all;
-use ieee.numeric_std.all;
-use ieee.std_logic_unsigned.all;
+library IEEE;
+use IEEE.std_logic_1164.all;
+use IEEE.numeric_std.all;
+use IEEE.std_logic_unsigned.all;
 
 entity command_decoder_v1 is
-	 port(
+	 Port(
 		  i_clk         	: in std_logic;
 		  i_rst         	: in std_logic;
 		  i_instr       	: in std_logic_vector(31 downto 0);
@@ -12,7 +12,8 @@ entity command_decoder_v1 is
 		  o_rs2         	: out std_logic_vector(4 downto 0);
 		  o_imm		    	: out std_logic_vector(11 downto 0);
 		  o_rd          	: out std_logic_vector(4 downto 0);
-		--  --o_read_to_LSU 	: out std_logic;
+		
+
 		  o_write_to_LSU 	: out std_logic;
 		  o_LSU_code		: out std_logic_vector(16 downto 0);
 		  o_LSU_code_post	: out std_logic_vector(16 downto 0);
@@ -22,15 +23,20 @@ entity command_decoder_v1 is
 	 );
 end entity;
 
-architecture rtl of command_decoder_v1 is  
+architecture command_decoder_v1_arch of command_decoder_v1 is  
+
   signal reg_stage_LSU_1 : std_logic_vector(22 downto 0) := (others => '0');
   signal reg_stage_LSU_2 : std_logic_vector(22 downto 0) := (others => '0');
   signal reg_stage_LSU_3 : std_logic_vector(22 downto 0) := (others => '0');
   signal reg_stage_LSU_4 : std_logic_vector(22 downto 0) := (others => '0');
+
 begin
-  process(i_clk, i_rst)
+
+  process(i_clk, i_rst) is
   begin
-    if i_rst = '1' then
+
+    if (i_rst = '1') then
+
 		reg_stage_LSU_1 <= (others => '0');
 		reg_stage_LSU_2 <= (others => '0');
 		reg_stage_LSU_3 <= (others => '0');
@@ -187,4 +193,4 @@ begin
 				
 	end if;
   end process;
-end rtl;
+end command_decoder_v1_arch;

@@ -175,26 +175,27 @@ begin
         --o_write_data_memory => 
 	);
 
+
 	process
 	begin
 		
-        wait for 11 ns;
+        wait_clk(2);
 	 
-        --rst_s <= '1';
-        --wait for 3 ns;
+        rst_s <= '1';
+        wait_clk(1);
 
-        --rst_s <= '0';
+        rst_s <= '0';
         tester_decoder_instr <= "11111111111100101100011100010011";
         
-        wait for clk_period;
+        wait_clk(1);
         
         tester_decoder_instr <= "00000000101010101010010100110011";
         
-        wait for clk_period;
+        wait_clk(1);
         
         tester_decoder_instr <= "11111111111101010001110100000011";
         
-        wait for clk_period;
+        wait_clk(1);
         
         tester_decoder_instr <= "11111110101000101000101010100011";
 
