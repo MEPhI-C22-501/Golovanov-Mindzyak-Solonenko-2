@@ -15,9 +15,6 @@ entity LSU is
         i_spec_reg_or_memory_decoder : in std_logic; --Если 1, то чтение из спец регистров, если 0 то из памяти (сделал)
         i_program_counter_csr : in std_logic_vector (15 downto 0); --Просто получаю (сделал)
 
-        --i_addr_spec_reg_decoder : in std_logic_vector (11 downto 0); --продумать и написать логику Адрес берем из регестра 
-        --i_spec_reg_data_csr : in std_logic_vector (31 downto 0); --продумать и написать логику, это будет получаться через write_back 
-
         o_opcode_alu : out std_logic_vector (16 downto 0);
         o_rs_csr : out registers_array;
         o_rs1_alu, o_rs2_alu : out std_logic_vector (31 downto 0);
