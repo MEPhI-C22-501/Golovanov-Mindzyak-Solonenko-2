@@ -78,7 +78,8 @@ architecture LSU_decoder_tests_arch of LSU_decoder_tests is
     signal decoder_LSU_opcode : std_logic_vector (16 downto 0);
     signal decoder_LSU_opcode_write :std_logic_vector (16 downto 0);
 
-    signal rs_csr : registers_array;
+    signal entry_rs_csr : registers_array;
+    signal given_rs_csr : registers_array;
 
     signal LSU_LSUMEM_write_enable_memory : std_logic;
     signal LSU_LSUMEM_addr_memory : std_logic_vector (15 downto 0);
@@ -136,7 +137,7 @@ begin
 	port map (
 		i_clk => clk_s,
 		i_rst => rst_s,
-		i_rs_csr => rs_csr,
+		i_rs_csr => entry_rs_csr,
 		i_write_enable_decoder => decoder_LSU_write_enable,
 		i_opcode_decoder => decoder_LSU_opcode,
 		i_opcode_write_decoder => decoder_LSU_opcode_write,
@@ -149,7 +150,7 @@ begin
 		i_program_counter_csr => tester_LSU_program_counter_csr,
 
 		o_opcode_alu => LSU_tester_opcode_alu,
-        o_rs_csr => rs_csr,
+        o_rs_csr => given_rs_csr,
         o_rs1_alu => LSU_tester_rs1_alu, 
         o_rs2_alu => LSU_tester_rs2_alu, 
         o_write_enable_memory => LSU_LSUMEM_write_enable_memory, 
@@ -175,29 +176,35 @@ begin
         --o_write_data_memory => 
 	);
 
-
 	process
 	begin
 		
-        wait_clk(2);
+        wait for 11 ns;
 	 
         rst_s <= '1';
-        wait_clk(1);
+        wait for 3 ns;
 
         rst_s <= '0';
-        tester_decoder_instr <= "11111111111100101100011100010011";
+
+        for i in 0 to 31 loop
+
+            entry_rs_csr(i) <=std_logic_vector(to_unsigned(i, 32));
+
+        end loop;
+
+        tester_decoder_instr <= "11111111111100101100011100010011"; 
         
-        wait_clk(1);
+        wait for clk_period;
         
-        tester_decoder_instr <= "00000000101010101010010100110011";
+        tester_decoder_instr <= "00000000101010101010010100110011"; 
         
-        wait_clk(1);
+        wait for clk_period;
         
-        tester_decoder_instr <= "11111111111101010001110100000011";
+        tester_decoder_instr <= "11111111111101010001110100000011"; 
         
-        wait_clk(1);
+        wait for clk_period;
         
-        tester_decoder_instr <= "11111110101000101000101010100011";
+        tester_decoder_instr <= "11111110101000101000101010100011"; 
 
 		wait;
 	end process;
