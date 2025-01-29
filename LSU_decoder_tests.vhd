@@ -116,7 +116,7 @@ begin
 	
 	clk_s <= not clk_s after clk_period / 2;
 
-    t1: command_decoder_v1
+    decoder_t: command_decoder_v1
     port map (
         i_clk => clk_s,
         i_rst => rst_s,
@@ -133,7 +133,7 @@ begin
         --o_wb_result_src => 
     );
 
-	t2: LSU
+	LSU_t: LSU
 	port map (
 		i_clk => clk_s,
 		i_rst => rst_s,
@@ -163,7 +163,7 @@ begin
 		--o_program_counter_write_enable 
 	);
 
-	t3: LSUMEM
+	LSUMEM_t: LSUMEM
 	port map (
 		i_clk => clk_s,
 		i_rst => rst_s,
@@ -175,6 +175,8 @@ begin
         --o_addr_memory => ,
         --o_write_data_memory => 
 	);
+
+    given_rs_csr <= entry_rs_csr;
 
 	process
 	begin
@@ -188,7 +190,8 @@ begin
 
         for i in 0 to 31 loop
 
-            entry_rs_csr(i) <=std_logic_vector(to_unsigned(i, 32));
+            entry_rs_csr(i) <= std_logic_vector(to_unsigned(i, 32));
+            entry_rs_csr(i)(25) <= '1';
 
         end loop;
 
