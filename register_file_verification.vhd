@@ -11,7 +11,7 @@ architecture register_file_verification_arch of register_file_verification is
     	component RegisterFile is
 	port (
 		i_clk        : in     std_logic;
-        	i_rst                  : in     std_logic;
+		i_rst                  : in     std_logic;
 		i_program_counter_write_enable : in std_logic;
 		i_program_counter : in std_logic_vector(15 downto 0);
 		o_program_counter   : out std_logic_vector(15 downto 0);
@@ -30,8 +30,8 @@ architecture register_file_verification_arch of register_file_verification is
         	i_rd_ans : in std_logic_vector (31 downto 0);
         	i_imm_decoder : in std_logic_vector (11 downto 0);
         	i_rs_csr : in registers_array;
-        	i_spec_reg_or_memory_decoder : in std_logic; --???? 1, ?? ?????? ?? ???? ?????????, ???? 0 ?? ?? ?????? (??????)
-        	i_program_counter_csr : in std_logic_vector (15 downto 0); --?????? ??????? (??????)
+        	i_spec_reg_or_memory_decoder : in std_logic; 
+        	i_program_counter_csr : in std_logic_vector (15 downto 0); 
 
         	o_opcode_alu : out std_logic_vector (16 downto 0);
         	o_rs_csr : out registers_array;
@@ -40,29 +40,29 @@ architecture register_file_verification_arch of register_file_verification is
         	o_addr_memory: out std_logic_vector (15 downto 0);
         	o_write_data_memory: out std_logic_vector (31 downto 0);
         	o_rd_csr : out std_logic_vector (4 downto 0);
-        	o_addr_spec_reg_csr : out std_logic_vector (11 downto 0)  --????? ????? ?? ???????? (??????)
+        	o_addr_spec_reg_csr : out std_logic_vector (11 downto 0)  
 	);
 	end component;
 
-    	signal clk_s     	  : std_logic := '0';
-   	signal rst_s              : std_logic := '0';
-   	signal registers_write_enable_s : std_logic := '0';
-	signal write_enable_decoder_s : std_logic := '0';
-	signal registers_number_s       : std_logic_vector(4 downto 0) := "00011";
-	signal registers_number3_s       : std_logic_vector(4 downto 0) := "00011";
-	signal registers_number_res_s       : std_logic_vector(4 downto 0) := "00011";
-    	signal program_counter_s  : std_logic_vector(15 downto 0) := (others => '0');
-	signal program_counter_res_s  : std_logic_vector(15 downto 0) := (others => '0');
-	signal program_counter_write_enable_s  : std_logic := '0';
-    	constant clk_period       : time := 10 ns;
-	signal registers_array_s        : registers_array := (others => (others => '0'));
-	signal registers_array_res_s    : registers_array := (others => (others => '0'));
-	signal instruction_s : std_logic_vector(16 downto 0) := "00000000100000011";
-	signal opcode_decoder_s  : std_logic_vector(16 downto 0) := "00000000000000000";
-	signal opcode_write_decoder_s  : std_logic_vector(16 downto 0) := "00000000000000000";
-	signal write_data_memory_s : std_logic_vector(31 downto 0) := x"00000000";
-	signal data_s : std_logic_vector(31 downto 0) := x"00000000";
-	signal addr_memory_s : std_logic_vector(15 downto 0) := x"0000";
+		signal clk_s     	  : std_logic := '0';
+		signal rst_s              : std_logic := '0';
+		signal registers_write_enable_s : std_logic := '0';
+		signal write_enable_decoder_s : std_logic := '0';
+		signal registers_number_s       : std_logic_vector(4 downto 0) := "00011";
+		signal registers_number3_s       : std_logic_vector(4 downto 0) := "00011";
+		signal registers_number_res_s       : std_logic_vector(4 downto 0) := "00011";
+		signal program_counter_s  : std_logic_vector(15 downto 0) := (others => '0');
+		signal program_counter_res_s  : std_logic_vector(15 downto 0) := (others => '0');
+		signal program_counter_write_enable_s  : std_logic := '0';
+		constant clk_period       : time := 10 ns;
+		signal registers_array_s        : registers_array := (others => (others => '0'));
+		signal registers_array_res_s    : registers_array := (others => (others => '0'));
+		signal instruction_s : std_logic_vector(16 downto 0) := "00000000100000011";
+		signal opcode_decoder_s  : std_logic_vector(16 downto 0) := "00000000000000000";
+		signal opcode_write_decoder_s  : std_logic_vector(16 downto 0) := "00000000000000000";
+		signal write_data_memory_s : std_logic_vector(31 downto 0) := x"00000000";
+		signal data_s : std_logic_vector(31 downto 0) := x"00000000";
+		signal addr_memory_s : std_logic_vector(15 downto 0) := x"0000";
 	
 
     	procedure wait_clk(constant j: in integer) is 

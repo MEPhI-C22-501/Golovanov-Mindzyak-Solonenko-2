@@ -85,7 +85,7 @@ begin
 
                         --передача rs2 в ALU
                         if(i_opcode_decoder = "00000000010010011" or
-                           i_opcode_decoder = "00000001010010010" or
+                           i_opcode_decoder = "00000001010010011" or
                            i_opcode_decoder = "01000001010010011" or
                            i_opcode_decoder = "00000000000010011" or
                            i_opcode_decoder = "00000001000010011" or
@@ -101,7 +101,6 @@ begin
                                  i_opcode_decoder = "00000001010110011" or 
                                  i_opcode_decoder = "01000001010110011" or 
                                  i_opcode_decoder = "00000000000110011" or 
-                                 i_opcode_decoder = "11001100000000010" or 
                                  i_opcode_decoder = "00000001000110011" or 
                                  i_opcode_decoder = "00000001100110011" or 
                                  i_opcode_decoder = "00000001110110011" or 
@@ -149,7 +148,7 @@ begin
 
                                 --Запись в регистр
                                 if (i_write_enable_decoder = '1' and 
-                                    i_opcode_decoder = "00000000000000011" and 
+                                    i_opcode_write_decoder = "00000000000000011" and 
                                     i_rd_decoder = std_logic_vector(to_unsigned(i, 5))) then --Load LB
                                                 
                                         --7 младших битов, все остальное знаковым битом (32)
@@ -157,7 +156,7 @@ begin
                                         o_rs_csr(i)(31 downto 8) <= (others => i_rd_ans(31));
                                         
                                 elsif (i_write_enable_decoder = '1' and 
-                                       i_opcode_decoder = "00000000010000011" and 
+                                       i_opcode_write_decoder = "00000000010000011" and 
                                        i_rd_decoder = std_logic_vector(to_unsigned(i, 5))) then --Load LH
                                                 
                                         --15 младших битов, все остальное знаковым битом (32)
@@ -165,19 +164,19 @@ begin
                                         o_rs_csr(i)(31 downto 15) <= (others => i_rd_ans(31));
                                         
                                 elsif (i_write_enable_decoder = '1' and 
-                                       i_opcode_decoder = "00000000100000011" and 
+                                       i_opcode_write_decoder = "00000000100000011" and 
                                        i_rd_decoder = std_logic_vector(to_unsigned(i, 5))) then --Load LW  
                                         
                                         o_rs_csr(i) <= i_rd_ans;
                                         
                                 elsif (i_write_enable_decoder = '1' and 
-                                       i_opcode_decoder = "00000001000000011" and 
+                                       i_opcode_write_decoder = "00000001000000011" and 
                                        i_rd_decoder = std_logic_vector(to_unsigned(i, 5))) then --Load LBU 
                                         
                                         o_rs_csr(i) <= i_rd_ans;
                                         
                                 elsif (i_write_enable_decoder = '1' and 
-                                       i_opcode_decoder = "00000001010000011" and 
+                                       i_opcode_write_decoder = "00000001010000011" and 
                                        i_rd_decoder = std_logic_vector(to_unsigned(i, 5))) then --Load LHU 
                                                 
                                         o_rs_csr(i) <= i_rd_ans;

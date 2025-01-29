@@ -100,24 +100,24 @@ begin
 		end if;
 
 		if (i_instr(6 downto 0) = "0110011") then
-			 o_LSU_code(2 downto 0) <= i_instr(14 downto 12);
-			 reg_stage_LSU_1(2 downto 0) <= i_instr(14 downto 12);
+			 o_LSU_code(9 downto 7) <= i_instr(14 downto 12);
+			 reg_stage_LSU_1(9 downto 7) <= i_instr(14 downto 12);
 		end if;
 
 		if (i_instr(6 downto 0) = "0110011") then
-			 o_LSU_code(9 downto 3) <= i_instr(31 downto 25);
-			 reg_stage_LSU_1(9 downto 3) <= i_instr(31 downto 25);
+			 o_LSU_code(16 downto 10) <= i_instr(31 downto 25);
+			 reg_stage_LSU_1(16 downto 10) <= i_instr(31 downto 25);
 		end if;
 		
 		if (i_instr(6 downto 0) = "0110011") then
-			 o_LSU_code(16 downto 10) <= i_instr(6 downto 0);
-			 reg_stage_LSU_1(16 downto 10) <= i_instr(6 downto 0);
+			 o_LSU_code(6 downto 0) <= i_instr(6 downto 0);
+			 reg_stage_LSU_1(6 downto 0) <= i_instr(6 downto 0);
 		end if;
 		-- end R-type
 		
 		
 		-- I-type
-		if (i_instr(6 downto 0) = "0000011" and i_instr(14 downto 12) = "010") then
+		if (i_instr(6 downto 0) = "0000011" and i_instr(14 downto 12) = "010" and i_instr(31 downto 16) = "0000000000000000") then
 			 o_LSU_reg_or_memory_flag <= '1';
 		else
 			 o_LSU_reg_or_memory_flag <= '0';
@@ -144,18 +144,23 @@ begin
 		end if;
 		
 		if (i_instr(6 downto 0) = "0000011" or i_instr(6 downto 0) = "0010011") then
-			 o_LSU_code(2 downto 0) <= i_instr(14 downto 12);
-			 reg_stage_LSU_1(2 downto 0) <= i_instr(14 downto 12);
+			 o_LSU_code(9 downto 7) <= i_instr(14 downto 12);
+			 reg_stage_LSU_1(9 downto 7) <= i_instr(14 downto 12);
 		end if;
 		
-		if (i_instr(6 downto 0) = "0000011" or i_instr(6 downto 0) = "0010011") then
-			 o_LSU_code(9 downto 3) <= (others => '0');
-			 reg_stage_LSU_1(9 downto 3) <= (others => '0');
-		end if;
+		if (i_instr(6 downto 0) = "0000011" or (i_instr(6 downto 0) = "0010011" and i_instr(14 downto 12) /= "101")) then
+			o_LSU_code(16 downto 10) <= (others => '0');
+			reg_stage_LSU_1(16 downto 10) <= (others => '0');
+		  end if;
+		  
+		  if (i_instr(6 downto 0) = "0010011" and i_instr(14 downto 12) = "101") then
+			o_LSU_code(16 downto 10) <= i_instr(31 downto 25);
+			reg_stage_LSU_1(16 downto 10) <= i_instr(31 downto 25);
+		  end if;
 		
 		if (i_instr(6 downto 0) = "0000011" or i_instr(6 downto 0) = "0010011") then
-			 o_LSU_code(16 downto 10) <= i_instr(6 downto 0);
-			 reg_stage_LSU_1(16 downto 10) <= i_instr(6 downto 0);
+			 o_LSU_code(6 downto 0) <= i_instr(6 downto 0);
+			 reg_stage_LSU_1(6 downto 0) <= i_instr(6 downto 0);
 		end if;
 		-- end I-type
 		
@@ -183,18 +188,18 @@ begin
 		end if;
 		
 		if (i_instr(6 downto 0) = "0100011") then
-			 o_LSU_code(2 downto 0) <= i_instr(14 downto 12);
-			 reg_stage_LSU_1(2 downto 0) <= i_instr(14 downto 12);
+			 o_LSU_code(9 downto 7) <= i_instr(14 downto 12);
+			 reg_stage_LSU_1(9 downto 7) <= i_instr(14 downto 12);
 		end if;
 		
 		if (i_instr(6 downto 0) = "0100011") then
-			 o_LSU_code(9 downto 3) <= (others => '0');
-			 reg_stage_LSU_1(9 downto 3) <= (others => '0');
+			 o_LSU_code(16 downto 10) <= (others => '0');
+			 reg_stage_LSU_1(16 downto 10) <= (others => '0');
 		end if;
 		
 		if (i_instr(6 downto 0) = "0100011") then
-			 o_LSU_code(16 downto 10) <= i_instr(6 downto 0);
-			 reg_stage_LSU_1(16 downto 10) <= i_instr(6 downto 0);
+			 o_LSU_code(6 downto 0) <= i_instr(6 downto 0);
+			 reg_stage_LSU_1(6 downto 0) <= i_instr(6 downto 0);
 		end if;
 		
 		if(i_instr(6 downto 0) = "0000011") then

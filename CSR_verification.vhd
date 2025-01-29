@@ -13,9 +13,9 @@ architecture CSR_verification_arch of CSR_verification is
 	port (
         	i_clk           	: in  STD_LOGIC;
         	i_rst           	: in  STD_LOGIC;
-		i_ALU_result     	: in  STD_LOGIC_VECTOR(31 downto 0); 
-		i_datamem_result   : in  STD_LOGIC_VECTOR(31 downto 0); 
-		i_CSR_result 		: in STD_LOGIC_VECTOR (31 downto 0);
+			i_ALU_result     	: in  STD_LOGIC_VECTOR(31 downto 0); 
+			i_datamem_result   : in  STD_LOGIC_VECTOR(31 downto 0); 
+			i_CSR_result 		: in STD_LOGIC_VECTOR (31 downto 0);
         	i_result_src       : in  STD_LOGIC_VECTOR(1 downto 0);  -- "00" - ALU; "01" - datamem; "10" - CSR                            
         	o_result        : out STD_LOGIC_VECTOR(31 downto 0)  
     	);
@@ -23,9 +23,9 @@ architecture CSR_verification_arch of CSR_verification is
 
 	component CSR is
     	port (
-		i_addr		: IN STD_LOGIC_VECTOR (11 DOWNTO 0);
-		i_clk		: IN STD_LOGIC  := '1';
-		o_data		: OUT STD_LOGIC_VECTOR (31 DOWNTO 0)
+			i_addr		: IN STD_LOGIC_VECTOR (11 DOWNTO 0);
+			i_clk		: IN STD_LOGIC  := '1';
+			o_data		: OUT STD_LOGIC_VECTOR (31 DOWNTO 0)
     	);
 	end component;
 
@@ -37,8 +37,8 @@ architecture CSR_verification_arch of CSR_verification is
         	i_rd_ans : in std_logic_vector (31 downto 0);
         	i_imm_decoder : in std_logic_vector (11 downto 0);
         	i_rs_csr : in registers_array;
-        	i_spec_reg_or_memory_decoder : in std_logic; --???? 1, ?? ?????? ?? ???? ?????????, ???? 0 ?? ?? ?????? (??????)
-        	i_program_counter_csr : in std_logic_vector (15 downto 0); --?????? ??????? (??????)
+        	i_spec_reg_or_memory_decoder : in std_logic; 
+        	i_program_counter_csr : in std_logic_vector (15 downto 0); 
 
         	o_opcode_alu : out std_logic_vector (16 downto 0);
         	o_rs_csr : out registers_array;
@@ -51,18 +51,18 @@ architecture CSR_verification_arch of CSR_verification is
 	);
 	end component;
 
-    	signal clk_s     	  : std_logic := '0';
-   	signal rst_s              : std_logic := '0';
-	signal read_data_s        : std_logic_vector(31 downto 0) := (others => '0');
-	signal result_s           : std_logic_vector(31 downto 0) := (others => '0');
-	signal resultSrc_s        : STD_LOGIC_VECTOR(1 downto 0) := "10";  -- "00" - ALU; "01" - datamem; "10" - CSR 
-	signal csr_addr_s    : std_logic_vector(11 downto 0) := (others => '0');
-	signal opcode_decoder_s  : std_logic_vector(16 downto 0) := "00000000100000011";
-	signal opcode_write_decoder_s  : std_logic_vector(16 downto 0) := "00000000100000011";
-  	signal registers_s : registers_array := (others => (others => '0'));
-	signal registers_res_s : registers_array := (others => (others => '0'));
-    	constant clk_period : time := 10 ns;
-	signal register_number_s : std_logic_vector(4 downto 0) := "00000";
+		signal clk_s     	  : std_logic := '0';
+		signal rst_s              : std_logic := '0';
+		signal read_data_s        : std_logic_vector(31 downto 0) := (others => '0');
+		signal result_s           : std_logic_vector(31 downto 0) := (others => '0');
+		signal resultSrc_s        : STD_LOGIC_VECTOR(1 downto 0) := "10";  -- "00" - ALU; "01" - datamem; "10" - CSR 
+		signal csr_addr_s    : std_logic_vector(11 downto 0) := (others => '0');
+		signal opcode_decoder_s  : std_logic_vector(16 downto 0) := "00000000100000011";
+		signal opcode_write_decoder_s  : std_logic_vector(16 downto 0) := "00000000100000011";
+		signal registers_s : registers_array := (others => (others => '0'));
+		signal registers_res_s : registers_array := (others => (others => '0'));
+		constant clk_period : time := 10 ns;
+		signal register_number_s : std_logic_vector(4 downto 0) := "00000";
 
     	procedure wait_clk(constant j: in integer) is 
         	variable ii: integer := 0;

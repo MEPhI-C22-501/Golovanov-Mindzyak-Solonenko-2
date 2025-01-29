@@ -4,26 +4,26 @@ use IEEE.NUMERIC_STD.ALL;
 use work.register_file_pkg.all;
 
 
-entity LSU_decoder_tests is
-end LSU_decoder_tests;
+entity LSU_decoder_testbench is
+end LSU_decoder_testbench;
 
-architecture LSU_decoder_tests_arch of LSU_decoder_tests is
+architecture LSU_decoder_testbench_arch of LSU_decoder_testbench is
 
     component command_decoder_v1 is
         port(
-             i_clk         	: in std_logic;
-             i_rst         	: in std_logic;
-             i_instr       	: in std_logic_vector(31 downto 0);
+             i_clk : in std_logic;
+             i_rst : in std_logic;
+             i_instr : in std_logic_vector(31 downto 0);
 
-             o_rs1         	: out std_logic_vector(4 downto 0);
-             o_rs2         	: out std_logic_vector(4 downto 0);
-             o_imm		    	: out std_logic_vector(11 downto 0);
-             o_rd          	: out std_logic_vector(4 downto 0);
-             o_write_to_LSU 	: out std_logic;
-             o_LSU_code		: out std_logic_vector(16 downto 0);
-             o_LSU_code_post	: out std_logic_vector(16 downto 0);
+             o_rs1 : out std_logic_vector(4 downto 0);
+             o_rs2 : out std_logic_vector(4 downto 0);
+             o_imm : out std_logic_vector(11 downto 0);
+             o_rd : out std_logic_vector(4 downto 0);
+             o_write_to_LSU : out std_logic;
+             o_LSU_code : out std_logic_vector(16 downto 0);
+             o_LSU_code_post : out std_logic_vector(16 downto 0);
              o_LSU_reg_or_memory_flag : out std_logic;
-             o_wb_result_src     : out  STD_LOGIC_VECTOR(1 downto 0)
+             o_wb_result_src : out  STD_LOGIC_VECTOR(1 downto 0)
         );
    end component;
 
@@ -35,8 +35,8 @@ architecture LSU_decoder_tests_arch of LSU_decoder_tests is
         i_rd_ans : in std_logic_vector (31 downto 0);
         i_imm_decoder : in std_logic_vector (11 downto 0);
         i_rs_csr : in registers_array;
-        i_spec_reg_or_memory_decoder : in std_logic; --Если 1, то чтение из спец регистров, если 0 то из памяти (сделал)
-        i_program_counter_csr : in std_logic_vector (15 downto 0); --Просто получаю (сделал)
+        i_spec_reg_or_memory_decoder : in std_logic;
+        i_program_counter_csr : in std_logic_vector (15 downto 0);
 
         o_opcode_alu : out std_logic_vector (16 downto 0);
         o_rs_csr : out registers_array;
@@ -45,7 +45,7 @@ architecture LSU_decoder_tests_arch of LSU_decoder_tests is
         o_addr_memory: out std_logic_vector (15 downto 0);
         o_write_data_memory: out std_logic_vector (31 downto 0);
         o_rd_csr : out std_logic_vector (4 downto 0);
-        o_addr_spec_reg_csr : out std_logic_vector (11 downto 0);  --Адрес берем из регестра (сделал)
+        o_addr_spec_reg_csr : out std_logic_vector (11 downto 0);
 		o_program_counter : out std_logic_vector(15 downto 0);
 		o_program_counter_write_enable : out std_logic
 	);
@@ -98,19 +98,6 @@ architecture LSU_decoder_tests_arch of LSU_decoder_tests is
     signal tester_LSU_program_counter_csr : std_logic_vector (15 downto 0);
 
     constant clk_period : time := 10 ns;
-
-
-    	procedure wait_clk(constant j: in integer) is 
-        	variable ii: integer := 0;
-        	begin
-        	while ii < j loop
-           		if (rising_edge(clk_s)) then
-                		ii := ii + 1;
-            		end if;
-            		wait for 10 ps;
-        	end loop;
-    	end;
-
 
 begin         
 	
@@ -176,17 +163,19 @@ begin
         --o_write_data_memory => 
 	);
 
-    given_rs_csr <= entry_rs_csr;
-
 	process
 	begin
 		
-        wait for 11 ns;
+        wait for clk_period / 2;
 	 
         rst_s <= '1';
-        wait for 3 ns;
+
+        wait for clk_period;
 
         rst_s <= '0';
+
+        tester_LSU_rd_ans <= std_logic_vector(to_unsigned(11, 32));
+        tester_LSU_rd_ans(31 downto 20) <= (others => '1');  
 
         for i in 0 to 31 loop
 
@@ -195,20 +184,122 @@ begin
 
         end loop;
 
-        tester_decoder_instr <= "11111111111100101100011100010011"; 
-        
+        tester_decoder_instr <= "11000000111001111000010000000011";  -- LB
+
         wait for clk_period;
-        
-        tester_decoder_instr <= "00000000101010101010010100110011"; 
-        
+
+        tester_decoder_instr <= "00001010001101000001001000000011";  -- LH
+
         wait for clk_period;
-        
-        tester_decoder_instr <= "11111111111101010001110100000011"; 
-        
+
+        tester_decoder_instr <= "10101000010110001010100000000011";  -- LW MEMORY
+
         wait for clk_period;
-        
-        tester_decoder_instr <= "11111110101000101000101010100011"; 
+
+        tester_decoder_instr <= "00000000000000001010100000000011";  -- LW CSR
+
+        wait for clk_period;
+
+        tester_decoder_instr <= "11100100000110010100000000000011";  -- LBU
+
+        wait for clk_period;
+
+        tester_decoder_instr <= "11000011101010100101000110000011";  -- LHU
+
+        wait for clk_period;
+
+        tester_decoder_instr <= "00011001100111011000011000100011";  -- BS
+
+        wait for clk_period;
+
+        tester_decoder_instr <= "01010000110001110001100000100011";  -- SH
+
+        wait for clk_period;
+
+        tester_decoder_instr <= "10111000011110001010110110100011";  -- SW
+
+        wait for clk_period;
+
+        tester_decoder_instr <= "00000000110010111001000110010011";  -- SLLI
+        report "SLLI";
+
+        wait for clk_period;
+
+        tester_decoder_instr <= "00000001000001110101110110010011";  -- SRLI
+        report "SRLI";
+
+        wait for clk_period;
+
+        tester_decoder_instr <= "01000001100000111101011110010011";  -- SRAI
+        report "SRAI";
+
+        wait for clk_period;
+
+        tester_decoder_instr <= "00000000100110010001100000110011";  -- SLL
+
+        wait for clk_period;
+
+        tester_decoder_instr <= "00000001000111001101011100110011";  -- SRL
+
+        wait for clk_period;
+
+        tester_decoder_instr <= "01000000101010010101101100110011";  -- SRA
+
+        wait for clk_period;
+
+        tester_decoder_instr <= "00000111011100111000101010010011";  -- ADDI
+
+        wait for clk_period;
+
+        tester_decoder_instr <= "00000001000111100000101110110011";  -- ADD
+
+        wait for clk_period;
+
+        tester_decoder_instr <= "01000000100000001000000110110011";  -- SUB
+
+        wait for clk_period;
+
+        tester_decoder_instr <= "10101101010111111100100100010011";  -- XORI
+
+        wait for clk_period;
+
+        tester_decoder_instr <= "10111000100110011110101010010011";  -- ORI
+
+        wait for clk_period;
+
+        tester_decoder_instr <= "10100010010001000111011110010011";  -- ANDI
+
+        wait for clk_period;
+
+        tester_decoder_instr <= "00000001111101010100100110110011";  -- XOR
+
+        wait for clk_period;
+
+        tester_decoder_instr <= "00000000110111101110111000110011";  -- OR
+
+        wait for clk_period;
+
+        tester_decoder_instr <= "00000001111111101111010000110011";  -- AND
+
+        wait for clk_period;
+
+        tester_decoder_instr <= "00000010001100010010000100010011";  -- SLTI
+
+        wait for clk_period;
+
+        tester_decoder_instr <= "01010101111101110011111110010011";  -- SLTIU
+
+        wait for clk_period;
+
+        tester_decoder_instr <= "00000001100101001010000010110011";  -- SLT
+
+        wait for clk_period;
+
+        tester_decoder_instr <= "00000000000110100011100010110011";  -- SLTU
+        report "SLTU";
+        wait for clk_period;
 
 		wait;
 	end process;
-end LSU_decoder_tests_arch;
+end LSU_decoder_testbench_arch;
+
