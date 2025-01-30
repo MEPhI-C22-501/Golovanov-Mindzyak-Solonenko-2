@@ -43,6 +43,31 @@ architecture LSU_arch of LSU is
 	signal o_program_counter_r : std_logic_vector(15 downto 0);
 	signal o_program_counter_write_enable_r : std_logic;
 
+	constant ADDI_OP   : std_logic_vector := "00000000000010011";
+	constant SLTI_OP   : std_logic_vector := "00000000100010011";
+	constant SLTIU_OP  : std_logic_vector := "00000000110010011";
+	constant XORI_OP   : std_logic_vector := "00000001000010011";
+	constant ORI_OP    : std_logic_vector := "00000001100010011";
+	constant ANDI_OP   : std_logic_vector := "00000001110010011";
+	constant SLLI_OP   : std_logic_vector := "00000000010010011";
+	constant SRLI_OP   : std_logic_vector := "00000001010010011";
+	constant SRAI_OP   : std_logic_vector := "01000001010010011";
+	
+	constant ADD_OP    : std_logic_vector := "00000000000110011";
+	constant SUB_OP    : std_logic_vector := "01000000000110011";
+	constant SLL_OP    : std_logic_vector := "00000000010110011";
+	constant SLT_OP    : std_logic_vector := "00000000100110011";
+	constant SLTU_OP   : std_logic_vector := "00000000110110011";
+	constant XOR_OP    : std_logic_vector := "00000001000110011";
+	constant SRL_OP    : std_logic_vector := "00000001010110011";
+	constant SRA_OP    : std_logic_vector := "01000001010110011";
+	constant OR_OP     : std_logic_vector := "00000001100110011";
+	constant AND_OP    : std_logic_vector := "00000001110110011";
+	constant MUL_OP    : std_logic_vector := "00000011000110011";
+	constant MULH_OP   : std_logic_vector := "00000011010110011";
+	constant MULHSU_OP : std_logic_vector := "00000010100110011";
+	constant MULHU_OP  : std_logic_vector := "00000010110110011";
+
 begin
 
         o_opcode_alu <= o_opcode_alu_r;
@@ -84,40 +109,40 @@ begin
                         o_opcode_alu_r <= i_opcode_decoder;
 
                         --передача rs2 в ALU
-                        if(i_opcode_decoder = "00000000010010011" or
-                           i_opcode_decoder = "00000001010010011" or
-                           i_opcode_decoder = "01000001010010011" or
-                           i_opcode_decoder = "00000000000010011" or
-                           i_opcode_decoder = "00000001000010011" or
-                           i_opcode_decoder = "00000001100010011" or
-                           i_opcode_decoder = "00000001110010011" or
-                           i_opcode_decoder = "00000000100010011" or
-                           i_opcode_decoder = "00000000110010011") then
-
-                                o_rs2_alu_r <= std_logic_vector(to_unsigned(0, 32));
+			if (i_opcode_decoder = ADDI_OP or
+			    i_opcode_decoder = SLTI_OP or
+			    i_opcode_decoder = SLTIU_OP or
+			    i_opcode_decoder = XORI_OP or
+			    i_opcode_decoder = ORI_OP or
+			    i_opcode_decoder = ANDI_OP or
+			    i_opcode_decoder = SLLI_OP or
+			    i_opcode_decoder = SRLI_OP or
+			    i_opcode_decoder = SRAI_OP) then
+			
+				o_rs2_alu_r <= std_logic_vector(to_unsigned(0, 32));
                                 o_rs2_alu_r(11 downto 0) <= i_imm_decoder(11 downto 0);
-                        
-                         elsif (i_opcode_decoder = "00000000010110011" or 
-                                 i_opcode_decoder = "00000001010110011" or 
-                                 i_opcode_decoder = "01000001010110011" or 
-                                 i_opcode_decoder = "00000000000110011" or 
-                                 i_opcode_decoder = "00000001000110011" or 
-                                 i_opcode_decoder = "00000001100110011" or 
-                                 i_opcode_decoder = "00000001110110011" or 
-                                 i_opcode_decoder = "00000000100110011" or 
-                                 i_opcode_decoder = "00000000110110011") then
-                                        
-                                        for i in 0 to 31 loop 
-                                        
-                                                if (i_rs2_decoder = std_logic_vector(to_unsigned(i, 5))) then
-                                        
-                                                        o_rs2_alu_r <= i_rs_csr(i);
-                                        
-                                                end if;
-
-                                        end loop;
-
-                        end if;
+			
+			elsif (i_opcode_decoder = ADD_OP or
+			       i_opcode_decoder = SUB_OP or
+			       i_opcode_decoder = SLL_OP or
+			       i_opcode_decoder = SLT_OP or
+			       i_opcode_decoder = SLTU_OP or
+			       i_opcode_decoder = XOR_OP or
+			       i_opcode_decoder = SRL_OP or
+			       i_opcode_decoder = SRA_OP or
+			       i_opcode_decoder = OR_OP or
+			       i_opcode_decoder = AND_OP or
+			       i_opcode_decoder = MUL_OP or
+			       i_opcode_decoder = MULH_OP or
+			       i_opcode_decoder = MULHSU_OP or
+			       i_opcode_decoder = MULHU_OP) then
+			
+				for i in 0 to 31 loop
+			    		if (i_rs2_decoder = std_logic_vector(to_unsigned(i, 5))) then
+						o_rs2_alu_r <= i_rs_csr(i);
+			    		end if;
+				end loop;
+			end if;
 
                         --связь с LSUMEM разрешение на запись
                         if ((i_opcode_decoder = "00000000000100011" or 
