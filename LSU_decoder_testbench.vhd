@@ -248,14 +248,37 @@ begin
         wait for clk_period;
 
         tester_decoder_instr <= "00000111011100111000101010010011";  -- ADDI
+        report "ADDI";
 
         wait for clk_period;
 
         tester_decoder_instr <= "00000001000111100000101110110011";  -- ADD
+        report "ADD";
 
         wait for clk_period;
 
         tester_decoder_instr <= "01000000100000001000000110110011";  -- SUB
+        report "SAB";
+
+        wait for clk_period;
+
+        tester_decoder_instr <= "00000010010100110000011000110011";  -- MUL
+        report "MUL";
+
+        wait for clk_period;
+
+        tester_decoder_instr <= "00000010101000101001101000110011";  -- MULH
+        report "MULH";
+
+        wait for clk_period;
+
+        tester_decoder_instr <= "00000011010011001010010110110011";  -- MULHSU 
+        report "MULHSU";
+
+        wait for clk_period;
+
+        tester_decoder_instr <= "00000010010100110011011000110011";  -- MULHU
+        report "MULHU";
 
         wait for clk_period;
 
@@ -297,6 +320,7 @@ begin
 
         tester_decoder_instr <= "00000000000110100011100010110011";  -- SLTU
         report "SLTU";
+
         wait for clk_period;
 
 		wait;

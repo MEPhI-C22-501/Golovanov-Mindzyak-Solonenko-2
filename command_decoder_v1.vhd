@@ -29,7 +29,6 @@ architecture rtl of command_decoder_v1 is
   
   signal o_wb_result_src_1 : std_logic_vector(1 downto 0) := (others => '0');
   signal o_wb_result_src_2 : std_logic_vector(1 downto 0) := (others => '0');
-  signal o_wb_result_src_3 : std_logic_vector(1 downto 0) := (others => '0');
 begin
   process(i_clk, i_rst)
   begin
@@ -40,7 +39,6 @@ begin
 		reg_stage_LSU_4 <= (others => '0');
 		o_wb_result_src_1 <= (others => '0');
 		o_wb_result_src_2 <= (others => '0');
-		o_wb_result_src_3 <= (others => '0');
 		o_rs1 <= (others => '0');
 		o_rs2 <= (others => '0');
 		o_imm <= (others => '0');
@@ -53,10 +51,10 @@ begin
     elsif rising_edge(i_clk) then
 		
 		-- final write information for LSU
-		o_write_to_LSU <= reg_stage_LSU_4(22);
-		o_rd <= reg_stage_LSU_4(21 downto 17);
-		o_LSU_code_post <= reg_stage_LSU_4(16 downto 0);
-		o_wb_result_src <= o_wb_result_src_3;
+		o_write_to_LSU <= reg_stage_LSU_3(22);
+		o_rd <= reg_stage_LSU_3(21 downto 17);
+		o_LSU_code_post <= reg_stage_LSU_3(16 downto 0);
+		o_wb_result_src <= o_wb_result_src_2;
 		
 		-- shift information for LSU
 		reg_stage_LSU_4 <= reg_stage_LSU_3;
@@ -65,7 +63,6 @@ begin
 		
 		-- shift information for WriteBack
 		
-		o_wb_result_src_3 <= o_wb_result_src_2;
 		o_wb_result_src_2 <= o_wb_result_src_1;
 		
 		if not (
@@ -117,6 +114,7 @@ begin
 		
 		
 		-- I-type
+		
 		if (i_instr(6 downto 0) = "0000011" and i_instr(14 downto 12) = "010" and i_instr(31 downto 16) = "0000000000000000") then
 			 o_LSU_reg_or_memory_flag <= '1';
 		else
@@ -149,14 +147,14 @@ begin
 		end if;
 		
 		if (i_instr(6 downto 0) = "0000011" or (i_instr(6 downto 0) = "0010011" and i_instr(14 downto 12) /= "101")) then
-			o_LSU_code(16 downto 10) <= (others => '0');
-			reg_stage_LSU_1(16 downto 10) <= (others => '0');
-		  end if;
-		  
-		  if (i_instr(6 downto 0) = "0010011" and i_instr(14 downto 12) = "101") then
-			o_LSU_code(16 downto 10) <= i_instr(31 downto 25);
-			reg_stage_LSU_1(16 downto 10) <= i_instr(31 downto 25);
-		  end if;
+			 o_LSU_code(16 downto 10) <= (others => '0');
+			 reg_stage_LSU_1(16 downto 10) <= (others => '0');
+		end if;
+		
+		if (i_instr(6 downto 0) = "0010011" and i_instr(14 downto 12) = "101") then
+			 o_LSU_code(16 downto 10) <= i_instr(31 downto 25);
+			 reg_stage_LSU_1(16 downto 10) <= i_instr(31 downto 25);
+		end if;
 		
 		if (i_instr(6 downto 0) = "0000011" or i_instr(6 downto 0) = "0010011") then
 			 o_LSU_code(6 downto 0) <= i_instr(6 downto 0);
