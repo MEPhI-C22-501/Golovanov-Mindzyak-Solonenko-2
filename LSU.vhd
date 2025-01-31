@@ -190,13 +190,13 @@ begin
                                                                 
                                                         --7 младших битов, все остальное знаковым битом (32)
                                                         o_rs_csr(i)(7 downto 0) <= i_rd_ans(7 downto 0);
-                                                        o_rs_csr(i)(31 downto 8) <= (others => i_rd_ans(31));
+                                                        o_rs_csr(i)(31 downto 8) <= (others => '0');--(others => i_rd_ans(31));
                                                         
                                                 elsif (i_opcode_write_decoder = LH_OP) then --Load LH
                                                                 
                                                         --15 младших битов, все остальное знаковым битом (32)
                                                         o_rs_csr(i)(14 downto 0) <= i_rd_ans(14 downto 0);
-                                                        o_rs_csr(i)(31 downto 15) <= (others => i_rd_ans(31));
+                                                        o_rs_csr(i)(31 downto 15) <= (others => '0');--(others => i_rd_ans(31));
                                                         
                                                 elsif (i_opcode_write_decoder = LW_OP) then --Load LW  
                                                         
@@ -204,11 +204,13 @@ begin
                                                         
                                                 elsif (i_opcode_write_decoder = LBU_OP) then --Load LBU 
                                                         
-                                                        o_rs_csr(i) <= i_rd_ans;
+                                                        o_rs_csr(i)(7 downto 0) <= i_rd_ans(7 downto 0);
+                                                        o_rs_csr(i)(31 downto 8) <= (others => i_rd_ans(31));
                                                         
                                                 elsif (i_opcode_write_decoder = LHU_OP) then --Load LHU 
                                                                 
-                                                        o_rs_csr(i) <= i_rd_ans;
+                                                        o_rs_csr(i)(14 downto 0) <= i_rd_ans(14 downto 0);
+                                                        o_rs_csr(i)(31 downto 15) <= (others => i_rd_ans(31));
                                                         
                                                 else  --Save answer
                                                                 

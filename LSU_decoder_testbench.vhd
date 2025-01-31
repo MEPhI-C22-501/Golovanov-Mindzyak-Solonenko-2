@@ -208,7 +208,7 @@ begin
 
         wait for clk_period;
 
-        tester_decoder_instr <= "00011001100111011000011000100011";  -- BS
+        tester_decoder_instr <= "00011001100111011000011000100011";  -- SB
 
         wait for clk_period;
 
