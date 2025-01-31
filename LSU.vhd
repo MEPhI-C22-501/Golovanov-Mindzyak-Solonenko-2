@@ -228,14 +228,14 @@ begin
                                         if (i_opcode_decoder = SB_OP) then -- Store SB
                                                         
                                                 --7 младших битов, все остальное знаковым битом (32)
-                                                o_write_data_memory_r(7 downto 0) <= i_rs_csr(i)(7 downto 0);
-                                                o_write_data_memory_r(31 downto 8) <= (others => i_rs_csr(i)(31));
+                                                o_write_data_memory_r(8 downto 0) <= i_rs_csr(i)(8 downto 0);
+                                                o_write_data_memory_r(31 downto 9) <= (others => '0');
                                                 
                                         elsif (i_opcode_decoder = SH_OP) then -- Store SH
                                                         
                                                 --15 младших битов, все остальное знаковым битом (32)
-                                                o_write_data_memory_r(14 downto 0) <= i_rs_csr(i)(14 downto 0);
-                                                o_write_data_memory_r(31 downto 15) <= (others => i_rs_csr(i)(31));
+                                                o_write_data_memory_r(15 downto 0) <= i_rs_csr(i)(15 downto 0);
+                                                o_write_data_memory_r(31 downto 16) <= (others => '0');
                                                 
                                         elsif (i_opcode_decoder = SW_OP) then -- Store SW
                                                         

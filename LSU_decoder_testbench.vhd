@@ -274,6 +274,7 @@ begin
 
         wait for clk_period;
 
+        tester_LSU_rd_ans <= std_logic_vector(to_unsigned(51, 32));
         tester_decoder_instr <= "00000010010100110000011000110011";  -- MUL
         report "MUL";
 
