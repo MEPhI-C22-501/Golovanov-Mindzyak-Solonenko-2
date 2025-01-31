@@ -185,38 +185,47 @@ begin
         end loop;
 
         tester_decoder_instr <= "11000000111001111000010000000011";  -- LB
+        report "LB";
 
         wait for clk_period;
 
         tester_decoder_instr <= "00001010001101000001001000000011";  -- LH
+        report "LH";
 
         wait for clk_period;
 
         tester_decoder_instr <= "10101000010110001010100000000011";  -- LW MEMORY
+        report "LW MEMORY";
 
         wait for clk_period;
 
         tester_decoder_instr <= "00000000000000001010100000000011";  -- LW CSR
+        report "LW CSR";
 
         wait for clk_period;
 
         tester_decoder_instr <= "11100100000110010100000000000011";  -- LBU
+        report "LBU";
 
         wait for clk_period;
 
         tester_decoder_instr <= "11000011101010100101000110000011";  -- LHU
+        report "LHU";
 
         wait for clk_period;
 
         tester_decoder_instr <= "00011001100111011000011000100011";  -- SB
+        report "SB";
 
         wait for clk_period;
 
         tester_decoder_instr <= "01010000110001110001100000100011";  -- SH
+        report "SH";
 
         wait for clk_period;
 
         tester_decoder_instr <= "10111000011110001010110110100011";  -- SW
+        report "SW";
 
         wait for clk_period;
 
@@ -236,14 +245,17 @@ begin
         wait for clk_period;
 
         tester_decoder_instr <= "00000000100110010001100000110011";  -- SLL
+        report "SLL";
 
         wait for clk_period;
 
         tester_decoder_instr <= "00000001000111001101011100110011";  -- SRL
+        report "SRL";
 
         wait for clk_period;
 
         tester_decoder_instr <= "01000000101010010101101100110011";  -- SRA
+        report "SRA";
 
         wait for clk_period;
 
@@ -258,7 +270,7 @@ begin
         wait for clk_period;
 
         tester_decoder_instr <= "01000000100000001000000110110011";  -- SUB
-        report "SAB";
+        report "SUB";
 
         wait for clk_period;
 
@@ -283,38 +295,47 @@ begin
         wait for clk_period;
 
         tester_decoder_instr <= "10101101010111111100100100010011";  -- XORI
+        report "XORI";
 
         wait for clk_period;
 
         tester_decoder_instr <= "10111000100110011110101010010011";  -- ORI
+        report "ORI";
 
         wait for clk_period;
 
         tester_decoder_instr <= "10100010010001000111011110010011";  -- ANDI
+        report "ANDI";
 
         wait for clk_period;
 
         tester_decoder_instr <= "00000001111101010100100110110011";  -- XOR
+        report "XOR";
 
         wait for clk_period;
 
         tester_decoder_instr <= "00000000110111101110111000110011";  -- OR
+        report "OR";
 
         wait for clk_period;
 
         tester_decoder_instr <= "00000001111111101111010000110011";  -- AND
+        report "AND";
 
         wait for clk_period;
 
         tester_decoder_instr <= "00000010001100010010000100010011";  -- SLTI
+        report "SLTI";
 
         wait for clk_period;
 
         tester_decoder_instr <= "01010101111101110011111110010011";  -- SLTIU
+        report "SLTIU";
 
         wait for clk_period;
 
         tester_decoder_instr <= "00000001100101001010000010110011";  -- SLT
+        report "SLT";
 
         wait for clk_period;
 
